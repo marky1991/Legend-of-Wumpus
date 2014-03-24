@@ -26,6 +26,7 @@ class Unit:
 		#Weight is between 0 and 10
 		self.weight = 5
 		self.movement = 4
+		#weapon_skill is on a geade scale of F-Ss
 		self.weapon_skill = {"axe": None,
 					"bow": None,
 					"sword": None,
