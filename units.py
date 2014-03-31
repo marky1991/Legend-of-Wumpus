@@ -59,6 +59,7 @@ class Unit:
 		return "{0}({1})".format(type(self), self.name)
 
 class Horseman(Unit):
+	"""Oscar, level ?"""
 	def __init__(self):
 		self.growth_rates = {"resistance": 30,
                                         "strength": 45,
@@ -76,3 +77,24 @@ class Horseman(Unit):
 		self.speed = 7
 		self.luck = 5
 		self.defense = 8
+
+class Myrmidon(Unit):
+	"""Mia, level 6"""
+	def __init__(self):
+		self.growth_rates = {"resistance": 30,
+                                        "strength": 45,
+                                        "speed": 45,
+                                        "skill": 50,
+                                        "magic": 20,
+                                        "luck": 30,
+                                        "defense": 35,
+                                        "hp": 55
+                                        }
+	
+		self.hp = 21
+                self.resistance = 0
+                self.magic = 0
+                self.skill = 6
+                self.speed = 7
+                self.luck = 5
+                self.defense = 8
