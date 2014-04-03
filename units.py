@@ -61,6 +61,7 @@ class Unit:
 class Horseman(Unit):
 	"""Oscar, level ?"""
 	def __init__(self):
+        super().__init__()
 		self.growth_rates = {"resistance": 30,
                                         "strength": 45,
                                         "speed": 45,
@@ -81,6 +82,7 @@ class Horseman(Unit):
 class Myrmidon(Unit):
 	"""Mia, level 6"""
 	def __init__(self):
+        super().__init__()
 		self.growth_rates = {"resistance": 30,
                                         "strength": 45,
                                         "speed": 45,
@@ -92,9 +94,155 @@ class Myrmidon(Unit):
                                         }
 	
 		self.hp = 21
-                self.resistance = 0
-                self.magic = 0
-                self.skill = 6
-                self.speed = 7
-                self.luck = 5
-                self.defense = 8
+        self.resistance = 0
+        self.magic = 0
+        self.skill = 6
+        self.speed = 7
+        self.luck = 5
+        self.defense = 8
+
+class Soldier(Unit):
+    """Nephenee, level 7"""
+    def __init__(self):
+        super().__init__()
+        self.growth_rates = {"hp": 55,
+                            "strength": 40,
+                            "magic": 20,
+                            "skill": 55,
+                            "speed": 55,
+                            "luck": 25,
+                            "defense": 35,
+                            "resistance": 30}
+    
+        self.hp = 22
+        self.strength = 8
+        self.magic = 2
+        self.skill = 10
+        self.speed = 11
+        self.luck = 6
+        self.defense = 9
+        self.resistance = 3
+
+        self.movement = 6
+
+class Fighter(Unit):
+    """Boyd, level 2"""
+    def __init__(self):
+        super().__init__()
+        self.growth_rates = {"hp": 75,
+                            "strength": 60,
+                            "magic": 5,
+                            "skill": 50,
+                            "speed": 45,
+                            "luck": 35,
+                            "defense": 25,
+                            "resistance": 25}
+
+        self.hp = 30
+        self.strength = 7
+        self.magic = 0
+        self.skill = 4
+        self.speed = 6
+        self.luck = 4
+        self.defense = 5
+        self.resistance = 0
+
+        self.movement = 6
+
+class Archer(Unit):
+    """Leonardo, level 4"""
+    def __init__(self):
+        super().__init__()
+        self.growth_rates = {"hp": 60,
+                            "strength": 40,
+                            "magic": 15,
+                            "skill": 75,
+                            "speed": 35,
+                            "luck": 65,
+                            "defense": 35,
+                            "resistance": 55}
+
+        self.hp = 17
+        self.strength = 8
+        self.magic = 0
+        self.skill = 12
+        self.speed = 10
+        self.luck = 6
+        self.defense = 5
+        self.resistance = 4
+
+        self.movement = 6
+
+#Come up with better name for this class. FE calls them "knights", but I think
+#that that is extremely confusing. Feel free to rename to whatever you like
+class Tank(Unit):
+    """Gatrie, level 9"""
+    def __init__(self):
+        super().__init__()
+        self.growth_rates = {"hp": 80,
+                            "strength": 55,
+                            "magic": 5,
+                            "skill": 55,
+                            "speed": 25,
+                            "luck": 25,
+                            "defense": 60,
+                            "resistance": 30}
+
+        self.hp = 31
+        self.strength = 12
+        self.magic = 0
+        self.skill = 6
+        self.speed = 5
+        self.luck = 5
+        self.defense = 14 
+        self.resistance = 0
+
+        self.movement = 5
+
+class Thief(Unit):
+    """Volke, level 10"""
+    def __init__(self):
+        super().__init__()
+        self.growth_rates = {"hp": 65,
+                            "strength": 50,
+                            "magic": 5,
+                            "skill": 55,
+                            "speed": 65,
+                            "luck": 35,
+                            "defense": 20,
+                            "resistance": 10}
+
+        self.hp = 25
+        self.strength = 12
+        self.magic = 0
+        self.skill = 13
+        self.speed = 13
+        self.luck = 7
+        self.defense = 14
+        self.resistance = 3
+
+        self.movement = 7
+
+class Mage(Unit):
+    """Duh. (Soren, level 1)"""
+    def __init__(self):
+        super().__init__()
+        self.growth_rates = {"hp": 45,
+                            "strength": 5,
+                            "magic": 60,
+                            "skill": 55,
+                            "speed": 40,
+                            "luck": 30,
+                            "defense": 15,
+                            "resistance": 55}
+
+        self.hp = 18
+        self.strength = 0
+        self.magic = 6
+        self.skill = 8
+        self.speed = 8
+        self.luck = 5
+        self.defense = 2
+        self.resistance = 7
+
+        self.movement = 7
