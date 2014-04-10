@@ -1,5 +1,19 @@
 import random
 
+#Still not sure if we're going to keep all of the subclasses or not
+#They don't have unique behavior (so far), so we should probably rip them
+#out. It just doesn't feel right right now, so they'll stay for now. 
+#(Recording in case we forget)
+
+#Still todo: 
+#   -Set up weapons for most of the classes
+#   -Set up weight
+#   -Extrapolate backwards for all of the classes to convert them to level 1
+#   characters
+#   -Skills
+#   -Add non-FE-based classes
+#   -?
+
 class Unit:
 	base_weapons = set()
 	def __init__(self):
@@ -246,3 +260,205 @@ class Mage(Unit):
         self.resistance = 7
 
         self.movement = 7
+
+class Priest(Unit):
+    """Rhys, level 4"""
+    def __init__(self):
+        super().__init__()
+        self.growth_rates = {"hp": 40,
+                            "strength": 5,
+                            "magic": 60,
+                            "skill": 50,
+                            "speed": 40,
+                            "luck": 50,
+                            "defense": 25,
+                            "resistance": 55}
+
+        self.hp = 20
+        self.strength = 0
+        self.magic = 10
+        self.skill = 7
+        self.speed = 4
+        self.luck = 6
+        self.defense = 0
+        self.resistance = 14
+
+        self.movement = 5
+
+#Not sure if keeping or not.
+#We can always simply not instantiate it
+
+#TODO: Discuss
+#We can probably have a class that is for the classes that transform
+#Might instead group by semantic meaning (E.g. animals).
+#Need to consider
+class Cat(Unit):
+    """Currently using lethe (lvl 3) from PoR. Might use ranulf instead. Need
+to test."""
+    def __init__(self):
+        super().__init__()
+        self.growth_rates = {"hp": 130,
+                            "strength": 50,
+                            "magic": 5,
+                            "skill": 65,
+                            "speed": 70,
+                            "luck": 50,
+                            "defense": 40,
+                            "resistance": 25}
+
+        #Using untransformed stats
+        #TODO: Discuss how to implement this properly.
+        self.hp = 34
+        self.strength = 12
+        self.magic = 4
+        self.skill = 10
+        self.speed = 12
+        self.luck = 15
+        self.defense = 9
+        self.resistance = 10
+
+        self.movement = 7
+
+class Tiger(Unit):
+    """Maurim, level 9. (He's less broken than Mordecai)"""
+    def __init__(self):
+        super().__init__()
+        self.growth_rates = {"hp": 145,
+                            "strength": 70,
+                            "magic": 5,
+                            "skill": 70,
+                            "speed": 55,
+                            "luck": 35,
+                            "defense": 35,
+                            "resistance": 45}
+
+        self.hp = 45
+        self.strength = 16
+        self.magic = 4
+        self.skill = 13
+        self.speed = 15
+        self.luck = 11
+        self.defense = 12
+        self.resistance = 12
+
+        self.movement = 7
+
+class Raven(Unit):
+    """Vika, level 13. (RD) She might be awful. Not sure."""
+    def __init__(self):
+        super().__init__()
+        self.growth_rates = {"hp": 60,
+                            "strength": 25,
+                            "magic": 50,
+                            "skill": 60,
+                            "speed": 60,
+                            "luck": 65,
+                            "defense": 15,
+                            "resistance": 65}
+
+        self.hp = 38
+        self.strength = 9
+        self.magic = 5
+        self.skill = 13
+        self.speed = 15
+        self.luck = 14
+        self.defense = 7
+        self.resistance = 7
+
+        self.movement = 6
+
+class Hawk(Unit):
+    """Janaff, level 8."""
+    def __init__(self):
+        super().__init__()
+        self.growth_rates = {"hp": 130,
+                            "strength": 55,
+                            "magic": 10,
+                            "skill": 70,
+                            "speed": 65,
+                            "luck": 40,
+                            "defense": 30,
+                            "resistance": 25}
+
+        self.hp = 39
+        self.strength = 13
+        self.magic = 5
+        self.skill = 15
+        self.speed = 17
+        self.luck = 16
+        self.defense = 11
+        self.resistance = 10
+
+        self.movement = 6
+
+class Heron(Unit):
+    """Reyson, level 3."""
+    def __init__(self):
+        super().__init__()
+        self.growth_rates = {"hp": 65,
+                            "strength": 5,
+                            "magic": 40,
+                            "skill": 50,
+                            "speed": 50,
+                            "luck": 60,
+                            "defense": 15,
+                            "resistance": 50}
+
+        self.hp = 22
+        self.strength = 1
+        self.magic = 10
+        self.skill = 11
+        self.speed = 14
+        self.luck = 15
+        self.defense = 2
+        self.resistance = 20
+
+        self.movement = 5
+
+class Red_Dragon(Unit):
+    """Ena, level 10."""
+    def __init__(self):
+        super().__init__()
+        self.growth_rates = {"hp": 145,
+                            "strength": 35,
+                            "magic": 5,
+                            "skill": 50,
+                            "speed": 60,
+                            "luck": 40,
+                            "defense": 40,
+                            "resistance": 30}
+
+        self.hp = 52
+        self.strength = 20
+        self.magic = 9
+        self.skill = 17
+        self.speed = 15
+        self.luck = 14
+        self.defense = 23
+        self.resistance = 21
+
+        self.movement = 5
+
+class White_Dragon(Unit):
+    """Nasir, level 18."""
+    def __init__(self):
+        super().__init__()
+        self.growth_rates = {"hp": 150,
+                            "strength": 50,
+                            "magic": 10,
+                            "skill": 55,
+                            "speed": 45,
+                            "luck": 60,
+                            "defense": 25,
+                            "resistance": 35}
+
+        self.hp = 56
+        self.strength = 20
+        self.magic = 11
+        self.skill = 123
+        self.speed = 22
+        self.luck = 17
+        self.defense = 24
+        self.resistance = 27
+
+        self.movement = 5
