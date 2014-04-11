@@ -6,7 +6,6 @@ import random
 #(Recording in case we forget)
 
 #Still todo: 
-#   -Set up weapons for most of the classes
 #   -Set up weight
 #   -Extrapolate backwards for all of the classes to convert them to level 1
 #   characters
@@ -14,7 +13,12 @@ import random
 #   -Add non-FE-based classes
 #   -?
 
+magic_triangle_types = {"fire", "wind", "lighting"}
+magic_types = magic_triangle_types | {"light", "dark"}
+
 class Unit:
+    #TODO: Remind me what this is for.
+    #What does base_weapons mean again???
 	base_weapons = set()
 	def __init__(self):
 		#Represents the max growth per level. Multipied by a random number between 0 and 1,
@@ -93,6 +97,18 @@ class Horseman(Unit):
 		self.luck = 5
 		self.defense = 8
 
+        #TODO: Discuss whether we want to give level E hand to everyone or not.
+        #TODO: Also, discuss if we really want to seperate horsemen by weapon
+        #type. I think we probably do (We don't want to give them both bows and
+        #swords for example), but we need to discuss how to imlpement it.
+        #I think creating (programmatic) class-level subtypes is a bad decision.
+        #I think we have two choices: We can either give the user the choice on
+        #generating his character or we can randomly choose for him. For now,
+        #I'm implementing the random choice approach.
+    
+        preferred_weapon = random.choice(["axe", "sword", "bow", "lance"])
+        self.weapon_skill[preferred_weapon] = "E"
+
 class Myrmidon(Unit):
 	"""Mia, level 6"""
 	def __init__(self):
@@ -114,6 +130,8 @@ class Myrmidon(Unit):
         self.speed = 7
         self.luck = 5
         self.defense = 8
+
+        self.weapon_skill["sword"] = "E"
 
 class Soldier(Unit):
     """Nephenee, level 7"""
@@ -139,6 +157,8 @@ class Soldier(Unit):
 
         self.movement = 6
 
+        self.weapon_skill["lance"] = "E"
+
 class Fighter(Unit):
     """Boyd, level 2"""
     def __init__(self):
@@ -163,6 +183,8 @@ class Fighter(Unit):
 
         self.movement = 6
 
+        self.weapon_skill["axe"] = "E"
+
 class Archer(Unit):
     """Leonardo, level 4"""
     def __init__(self):
@@ -186,6 +208,8 @@ class Archer(Unit):
         self.resistance = 4
 
         self.movement = 6
+
+        self.weapon_skill["bow"] = "E"
 
 #Come up with better name for this class. FE calls them "knights", but I think
 #that that is extremely confusing. Feel free to rename to whatever you like
@@ -213,6 +237,11 @@ class Tank(Unit):
 
         self.movement = 5
 
+        #TODO: Discuss this. Should we allow tanks to use all weapon types? FE
+        #flip-flops between allowing lance vs axe. I'm not sure if there are
+        #balancing concerns here or not. For now just implementing PoR behavior.
+        self.weapon_skill["lance"] = "E"
+
 class Thief(Unit):
     """Volke, level 10"""
     def __init__(self):
@@ -237,6 +266,8 @@ class Thief(Unit):
 
         self.movement = 7
 
+        self.weapon_skill["knife"] = "E"
+
 class Mage(Unit):
     """Duh. (Soren, level 1)"""
     def __init__(self):
@@ -260,6 +291,45 @@ class Mage(Unit):
         self.resistance = 7
 
         self.movement = 7
+        for magic_type in magic_triangle_types:
+            self.weapon_type[magic_type] = "E"
+
+class Dark_Mage(Unit):
+    """Pelleas, level 12. (I've never played with him. No idea
+if he's any good at all. Compare with soren to see.)"""
+    def __init__(self):
+        super().__init__()
+        self.growth_rates = {"hp": 25,
+                            "strength": 25,
+                            "magic": 55,
+                            "skill": 45,
+                            "speed": 60,
+                            "luck": 40,
+                            "defense": 30,
+                            "resistance": 45}
+
+        self.hp = 33
+        self.strength = 13
+        self.magic = 24
+        self.skill = 20
+        self.speed = 21
+        self.luck = 14
+        self.defense = 14
+        self.resistance = 19
+
+        self.movement = 6
+        self.weight = 9
+        ##TODO: Discuss.
+        #Pelleas has thunder and dark. Sephiran, the other dark mage of the
+        #first two, starts as an archsage it looks like and has
+        #light+dark(+staff). Maybe give dark + one random choice from the rest of
+        #the magic types? It's kind of unfair though. With this way, dark mages
+        #beat two of the three points of the triangle, while normal mages (and
+        #bishops) can only beat one. I guess the counter is to make them
+        #slightly worse than normal mages.
+        self.weapon_skill["dark"] = "E"
+        other_known_magic = random.choice(magic_types - {"dark"})
+        self.weapon_type[other_known_magic] = "E"
 
 class Priest(Unit):
     """Rhys, level 4"""
@@ -284,6 +354,8 @@ class Priest(Unit):
         self.resistance = 14
 
         self.movement = 5
+    
+        self.weapon_type["staff"] = "E"
 
 #Not sure if keeping or not.
 #We can always simply not instantiate it
@@ -318,6 +390,7 @@ to test."""
         self.resistance = 10
 
         self.movement = 7
+        self.weapon_type["hand"] = "E"
 
 class Tiger(Unit):
     """Maurim, level 9. (He's less broken than Mordecai)"""
@@ -342,6 +415,7 @@ class Tiger(Unit):
         self.resistance = 12
 
         self.movement = 7
+        self.weapon_type["hand"] = "E"
 
 class Raven(Unit):
     """Vika, level 13. (RD) She might be awful. Not sure."""
@@ -366,6 +440,7 @@ class Raven(Unit):
         self.resistance = 7
 
         self.movement = 6
+        self.weapon_type["hand"] = "E"
 
 class Hawk(Unit):
     """Janaff, level 8."""
@@ -390,6 +465,7 @@ class Hawk(Unit):
         self.resistance = 10
 
         self.movement = 6
+        self.weapon_type["hand"] = "E"
 
 class Heron(Unit):
     """Reyson, level 3."""
@@ -414,6 +490,8 @@ class Heron(Unit):
         self.resistance = 20
 
         self.movement = 5
+        #TODO: Discuss. Do we want to give them a weapon of some kind?
+        self.weapon_type["song"] = "E"
 
 class Red_Dragon(Unit):
     """Ena, level 10."""
@@ -438,6 +516,9 @@ class Red_Dragon(Unit):
         self.resistance = 21
 
         self.movement = 5
+        #TODO: Do we want to make this fire instead of hand?
+        #I think so.
+        self.weapon_type["hand"] = "E"
 
 class White_Dragon(Unit):
     """Nasir, level 18."""
@@ -462,3 +543,4 @@ class White_Dragon(Unit):
         self.resistance = 27
 
         self.movement = 5
+        self.weapon_type["hand"] = "E"
