@@ -1,6 +1,7 @@
 import circuits
+from circuits import node
 
-class Client(circuits.net.sockets.TCPClient):
+class Client(circuits.node.client.Client):
     def read(self, socket, data):
         event = events.parse(data)
         old_events = new_events = event.handle()

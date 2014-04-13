@@ -1,8 +1,11 @@
 import circuits
-from . import events
+from circuits import node
+#from wumpus import events
+import itertools
 
 class Server(circuits.node.server.Server):
-    def __init__(self):
+    def __init__(self, host="127.0.0.1", port=9001):
+        super().__init__((host, port))
         #This maps user_id to client
         self.clients = {}
         self.id_generator = itertools.count()
@@ -15,7 +18,7 @@ class Server(circuits.node.server.Server):
         old_events = new_events = event.handle()
         #old = new = [BBevent]
         while new_events:
-            new = [bb] -> [blow, candle]
+            #new = [bb] -> [blow, candle]
             #old = [BBEvent] -> [blow, candle]
             old_events = list(new_events)
             #old = bb -> [blow, candle]
