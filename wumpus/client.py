@@ -1,7 +1,11 @@
 import circuits
 from circuits import node
 
-class Client(circuits.node.client.Client):
+class Client(circuits.Component):
+    def __init__(self, host, port):
+        super().__init__()
+        node.Node((host, port)).register(self)
+        
     def read(self, socket, data):
         event = events.parse(data)
         old_events = new_events = event.handle()
