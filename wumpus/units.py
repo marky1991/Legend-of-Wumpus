@@ -17,9 +17,6 @@ magic_triangle_types = {"fire", "wind", "lighting"}
 magic_types = magic_triangle_types | {"light", "dark"}
 
 class Unit:
-    #TODO: Remind me what this is for.
-    #What does base_weapons mean again???
-    base_weapons = set()
     def __init__(self):
         #Represents the max growth per level. Multipied by a random number between 0 and 1,
         #then rounded to the nearest integer 
@@ -236,9 +233,6 @@ class Tank(Unit):
 
         self.movement = 5
 
-        #TODO: Discuss this. Should we allow tanks to use all weapon types? FE
-        #flip-flops between allowing lance vs axe. I'm not sure if there are
-        #balancing concerns here or not. For now just implementing PoR behavior.
         self.weapon_skill["lance"] = "E"
 
 class Thief(Unit):

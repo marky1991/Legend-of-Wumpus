@@ -1,16 +1,18 @@
 import circuits
-from circuits import node
-#from wumpus import events
+from . import events
+from circuits.node import Node
 import itertools
 
-class Server(circuits.Component):
-    def __init__(self, host="127.0.0.1", port=9001):
+class Server(circuits.core.Component):
+    def __init__(self, host="0.0.0.0", port=50551):
         super().__init__()
         #This maps user_id to client
         self.clients = {}
+        self.host = host
+        self.port = port
         self.id_generator = itertools.count()
-        node.Node((host, port)).register(self)
-        
+        Node((host, port)).register(self)
+
     def connect(*args):
         pass
 
@@ -30,3 +32,5 @@ class Server(circuits.Component):
                 #new = [blow_up, c=andle_on] -> [] 
                 new_events.extend(event.handle())
                 self.broadcast(event)
+
+    
