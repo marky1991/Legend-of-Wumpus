@@ -20,6 +20,8 @@ class Server(circuits.core.Component):
         event = events.parse(data)
         old_events = new_events = event.handle()
         #old = new = [BBevent]
+        #Hmm. This implementation assumes a finite event 
+        #set is returned. This might be hurtful.
         while new_events:
             #new = [bb] -> [blow, candle]
             #old = [BBEvent] -> [blow, candle]
