@@ -35,7 +35,25 @@ pretty sure this is a good idea, but I could maybe be wrong.
 class Join_Event(Event):
     broadcast = True
     def __init__(self, client):
-        super().__init__(client)
+        self.client = client
+        super().__init__(args=(client,))
     def handle(self, listener):
         #TODO: You know, add the client to the client list.
-         return
+        listener.players.append(self.client.player)
+    def debytify(json_val):
+        json_dict = json.loads(json_val)
+        #Join_Event(5,6,7, name="mark", pw="bob")
+        return Join_Event(*json_dict["args"], **json_dict["kwargs"]
+        #def spam(*args): return args[0], args[2]
+        #spam(5,6,7,8,9,10,11) -> (5,7)
+        #def blah(*args, **kwargs): return args, kwargs
+        #blah(1,2,3,4,5, (6,7,8), "walrus", name="sally", bob="boob", t=6) ->
+        #((1,2,3,4,5, (6,7,8), "walrus"), {"name": "sally", "bob": "boob", "t":
+        #6})
+
+        #def add(a, b, c): return sum(a,b,c)
+        #nums = [5,6,7]
+        #add(nums[0], nums[1], nums[2])
+        #add(*nums) == add(5,6,7) 
+
+        #def ignore(*args): pass  
