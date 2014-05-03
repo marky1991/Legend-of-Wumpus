@@ -1,5 +1,12 @@
 import json
 
+def parse(byte_string):
+    string = byte_string.decode("utf-8")
+    dictionary = json.loads(string)
+    try:
+        return locals()[dictionary["name"]].debytify(string)
+    except KeyError:
+        return Event()
 class Event:
     #Determines whether the server will forward the event on to other clients or
 #not.
