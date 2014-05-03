@@ -1,5 +1,5 @@
 import circuits
-
+from . import events
 class Network_Node:
     """Represents a node (In the graph-theory sense) in the network. 
 A node can be either a server or a client. Note: This object is 
@@ -16,7 +16,7 @@ information, but that day isn't today."""
     @circuits.handler("read")
     def read(self, socket, data):
         event = events.parse(data)
-        old_events = new_events = event.handle()
+        old_events = new_events = event.handle(self)
         #old = new = [BBevent]
         #Hmm. This implementation assumes a finite event
         #set is returned. This might be hurtful.
