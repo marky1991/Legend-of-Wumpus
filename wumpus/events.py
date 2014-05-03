@@ -43,7 +43,7 @@ class Join_Event(Event):
     def debytify(json_val):
         json_dict = json.loads(json_val)
         #Join_Event(5,6,7, name="mark", pw="bob")
-        return Join_Event(*json_dict["args"], **json_dict["kwargs"]
+        return Join_Event(*json_dict["args"], **json_dict["kwargs"])
         #def spam(*args): return args[0], args[2]
         #spam(5,6,7,8,9,10,11) -> (5,7)
         #def blah(*args, **kwargs): return args, kwargs
