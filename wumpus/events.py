@@ -1,7 +1,46 @@
-import json
+import json, subprocess
+from collections.abc import Mapping
 
-def parse(byte_string):
+def bytify(arg):
+    return json.dumps(_bytify(arg))
+
+def _bytify(arg):
+    """Woo recursion!"""
+    print("Start")
+    if hasattr(arg, "jsonify"):
+        print("Jsonify")
+        return _bytify(arg.jsonify())
+
+    known_types = [str, int, float, bool, type(None)]
+    if type(arg) in known_types:
+        print("Simple")
+        return arg
+    #If it's a mapping
+    if isinstance(arg, Mapping):
+        print("It's a map!")
+        def wrap(item):
+            return type(arg)(item)
+        return wrap({_bytify(key): _bytify(value) for (key, value) in arg.items()})
+    if hasattr(arg, "__iter__"):
+        print("Iter")
+        def wrap(item):
+            return type(arg)([item])
+        if len(arg) > 1:
+            head, *tail = arg
+
+            #Python doesn't do tail-call optimization anyway
+            return wrap(_bytify(head)) + wrap(_bytify(*tail))
+        elif len(arg) == 1:
+            return wrap(_bytify(arg[0]))
+        else:
+            return wrap([])
+    print("Fail")
+    raise ValueError("Unbytify-able object: {obj}".format(obj=arg))
+
+def debytify(byte_string):
+    print("Start")
     string = byte_string.decode("utf-8")
+    print(string, "STRING")
     dictionary = json.loads(string)
     try:
         return locals()[dictionary["name"]].debytify(string)
@@ -28,12 +67,14 @@ pretty sure this is a good idea, but I could maybe be wrong.
         return iter((self,))
     @property
     def name(self):
-        return str(type(self))
-    def bytify(self):
-        out = {"name": self.name,
+        cls = self.__class__
+        return cls.__module__ + "." + cls.__name__
+    def jsonify(self):
+        return {"name": self.name,
                 "args": self.args,
                 "kwargs": self.kwargs}
-        return json.dumps(out)
+    def bytify(self):
+        return bytify(self.jsonify())
     @staticmethod
     def debytify(json_val):
         json_dict = json.loads(json_val)
@@ -41,12 +82,12 @@ pretty sure this is a good idea, but I could maybe be wrong.
 
 class Join_Event(Event):
     broadcast = True
-    def __init__(self, client):
-        self.client = client
-        super().__init__(args=(client,))
+    def __init__(self, player):
+        self.player = player
+        super().__init__(args=(player,))
     def handle(self, listener):
         #TODO: You know, add the client to the client list.
-        listener.players.append(self.client.player)
+        listener.players.append(self.player)
     def debytify(json_val):
         json_dict = json.loads(json_val)
         #Join_Event(5,6,7, name="mark", pw="bob")
@@ -63,4 +104,34 @@ class Join_Event(Event):
         #add(nums[0], nums[1], nums[2])
         #add(*nums) == add(5,6,7) 
 
-        #def ignore(*args): pass  
+        #def ignore(*args): pass 
+
+class Update_Code_Event(Event):
+    broadcast = True
+    def __init__(self):
+        super().__init__()
+    def handle(self, listener):
+        print("Hello from updet")
+        pull_shell = subprocess.Popen(("echo", "donmarcos", "|", "sudo", "-S", "git", "pull"), shell=True)
+        error_code = pull_shell.poll()
+        if error_code:
+            raise Exception("Returned {err_code} from git pull".format(err_code=error_code))
+        else:
+            print("Finished")
+            Restart_Event().handle(listener)
+
+class Shutdown_Event(Event):
+    """Shuts the server down. To be handled server-side only."""
+    def __init__(self):
+        super().__init__()
+    def handle(self, server):
+        print("Got a shutfown")
+        server.shutdown()
+
+class Restart_Event(Event):
+    """Restarts the server. Again, server-side only."""
+    def __init__(self):
+        super().__init__()
+    def handle(self, server):
+        print("Restarting")
+        server.restart()

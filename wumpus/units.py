@@ -70,6 +70,16 @@ class Unit:
                 increased_level = random.random() > growth_rate/100
                 increased_none = guaranteed_levels + increased_level == 0 
                 setattr(self, attribute_name, getattr(self, attribute_name) + guaranteed_levels + increased_level)
+    
+    @classmethod
+    def create(cls):
+        default = cls()
+        for arg in vars(default):
+            try:
+                setattr(default, arg, getattr(default, arg)*random.random())
+            except TypeError:
+                pass
+        return default
     def __str__(self):
         return "{0}({1})".format(type(self), self.name)
 

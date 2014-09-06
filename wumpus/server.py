@@ -1,18 +1,44 @@
 import circuits
+import sys
+
+from circuits.net.events import disconnect
 from . import events
 from circuits.node import Node
 import itertools
 from .network_node import Network_Node
 
-class Server(Network_Node, circuits.core.Component):
+class Server(Network_Node, circuits.core.BaseComponent):
     def __init__(self, host="0.0.0.0", port=50551):
         super().__init__(host=host, port=port)
         #This maps user_id to client
         self.clients = {}
+        #This is a temporary design. Ultimately this will be part of a client.
+        #This is just here until clients are implemented
+        self.sockets = set()
         self.id_generator = itertools.count()
         self.node = Node((self.host, self.port))
         self.node.register(self)
-        
-    def connect(*args):
-        print("Hey")
-        pass
+            
+    @circuits.handler("connect")
+    def connect(self, socket, host, port):
+        self.sockets.add(socket)
+    
+    @circuits.handler("disconnect")
+    def disconnect(self, socket):
+        #This is an intentionally local event
+        print("Updating code")
+        events.Update_Code_Event().handle(self)
+    
+    def cleanup(self):
+        print("cleaning")
+        #self.fire(disconnect())
+        self.node.stop()
+        self.stop()
+    
+    def shutdown(self):
+        print("Shuting down")
+        self.cleanup()
+        sys.exit(1)
+    def restart(self):
+        self.cleanup()
+        sys.exit(4)
