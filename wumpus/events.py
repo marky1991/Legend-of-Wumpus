@@ -1,5 +1,6 @@
 import json, subprocess
 from collections.abc import Mapping
+from utils import get_sudo_password
 
 def bytify(arg):
     return json.dumps(_bytify(arg))
@@ -107,12 +108,20 @@ class Join_Event(Event):
         #def ignore(*args): pass 
 
 class Update_Code_Event(Event):
+    """Teehee. This event probably represents a fairly bad security hole. It allows clients
+to force the server to update its code. (Pull from the repo). 
+
+    Given that ultimately I'd like to be able
+to test this by running it on different boxes, this will become necessary for proper testing and not
+painstakingly-slow development."""
     broadcast = True
     def __init__(self):
         super().__init__()
     def handle(self, listener):
         print("Hello from updet")
-        pull_shell = subprocess.Popen(("echo", "donmarcos", "|", "sudo", "-S", "git", "pull"), shell=True)
+        #Sudo is required for some unknown reason.
+        password = get_sudo_password()
+        pull_shell = subprocess.Popen(("echo", password, "|", "sudo", "-S", "git", "pull"), shell=True)
         error_code = pull_shell.poll()
         if error_code:
             raise Exception("Returned {err_code} from git pull".format(err_code=error_code))
