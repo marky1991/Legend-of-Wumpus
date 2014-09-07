@@ -1,5 +1,7 @@
 import json, subprocess
 from collections.abc import Mapping
+import platform
+
 from utils import get_sudo_password
 
 def bytify(arg):
@@ -117,7 +119,15 @@ to force the server to update its code. (Pull from the repo).
 to test this by running it on different boxes, this will become necessary for proper testing and not
 painstakingly-slow development.
    
-Note: This needs to be broadcasted so that the clients know to disconnect and then reconnect."""
+Note: This needs to be broadcasted so that the clients know to disconnect and then reconnect.
+ 
+A better solution for this problem would be to allow ssh connections into the server I'm connecting
+to, but that wouldn't play nice/easily with windows. (I would like to use windows as the server
+to ensure that there won't be OS-related issues down the line.) Plus, to be completely honest, this
+allows me to be even lazier than I would have to be to do it the Right Way. 
+
+(The fact that I have to write such a large docstring to defend my decision does suggest otherwise...)"""
+
     broadcast = True
     listeners = set()
     def __init__(self):
@@ -126,10 +136,16 @@ Note: This needs to be broadcasted so that the clients know to disconnect and th
         print("Hello from updet")
         #Sudo is required for some unknown reason.
         password = get_sudo_password()
-        pull_shell = subprocess.Popen(("echo", password, "|", "sudo", "-S", "git", "pull"), shell=True)
-        stdout, stderr = pull_shell.communicate()
+        if platform.system() == "Linux":
+            cmd = ("echo", password, "|", "sudo", "-S", "git", "pull")
+        else:
+            cmd = ("git", "pull")
+        pull_shell = subprocess.Popen(cmd, stdin=subprocess.PIPE, stderr=subprocess.PIPE,
+                                        stdout=subprocess.PIPE, shell=False,
+                                        universal_newlines=True)
+        stdout, stderr = pull_shell.communicate(input="superosog1")
         error_code = True
-        print(stdout, stderr)
+        print(stdout, stderr, pull_shell)
         if error_code:
             raise Exception("Returned {err_code} from git pull".format(err_code=error_code))
         else:

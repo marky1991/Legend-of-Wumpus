@@ -13,6 +13,7 @@ import random
 #   -Add non-FE-based classes
 #   -?
 
+#HELLO I AM A DIFF
 magic_triangle_types = {"fire", "wind", "lighting"}
 magic_types = magic_triangle_types | {"light", "dark"}
 
