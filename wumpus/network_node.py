@@ -41,8 +41,14 @@ information, but that day isn't today."""
                     new_events = []
     def shutdown(self):
         self.stop()
-    def broadcast(self):
-        self.fire(remote(connect(("0.0.0.0", 50551)), "server"))
+    def broadcast(self, event):
+        #I'm not even sure what this code was trying to do...
+        #Surely it was a temporary ujnk piece cof code.
+
+        #Actual broadcasting logic needs to be added.
+        raise NotImplementedError("Nope")
+        
+        #self.fire(remote(connect(("0.0.0.0", 50551)), "server"))
     
     @property
     def is_server(self):
