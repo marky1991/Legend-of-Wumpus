@@ -21,7 +21,9 @@ information, but that day isn't today."""
         old_events = new_events = event.handle(self)
         #old = new = [BBevent]
         #Hmm. This implementation assumes a finite event
-        #set is returned. This might be hurtful.
+        #set is returned. This might be hurtful. (But for any sane event, it isn't.
+        #(And since the handler has to be on the server, any server manager that installs a server
+        #handler that generates infinite events has shot himself in the foot))
         while new_events:
             #new = [bb] -> [blow, candle]
             #old = [BBEvent] -> [blow, candle]
@@ -36,9 +38,14 @@ information, but that day isn't today."""
                 new_events.extend(caused_events)
                 if event.broadcast:
                     self.broadcast(event)
-                if caused_events is None:
-                    self.shutdown()
-                    new_events = []
+                for listener in type(event).listeners:
+                    #This API doesn't yet exist.
+                    #Will define when we have a listener.
+                    listener.handle(event)
+                #I don't understand this logic.
+                #if caused_events is None:
+                #    self.shutdown()
+                #    new_events = []
     def shutdown(self):
         self.stop()
     def broadcast(self, event):

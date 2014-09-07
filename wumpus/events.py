@@ -51,6 +51,7 @@ class Event:
     #Determines whether the server will forward the event on to other clients or
 #not.
     broadcast = False
+    listeners = set()
     def __init__(self, *args, **kwargs):
         self.args = args or []
         self.kwargs = kwargs or {}
@@ -82,7 +83,8 @@ pretty sure this is a good idea, but I could maybe be wrong.
         return Event(*json_dict["args"], **json_dict["kwargs"])
 
 class Join_Event(Event):
-    broadcast = True
+    broadcast = True    
+    listeners = set()
     def __init__(self, player):
         self.player = player
         super().__init__(args=(player,))
@@ -113,8 +115,11 @@ to force the server to update its code. (Pull from the repo).
 
     Given that ultimately I'd like to be able
 to test this by running it on different boxes, this will become necessary for proper testing and not
-painstakingly-slow development."""
+painstakingly-slow development.
+   
+Note: This needs to be broadcasted so that the clients know to disconnect and then reconnect."""
     broadcast = True
+    listeners = set()
     def __init__(self):
         super().__init__()
     def handle(self, listener):
@@ -122,7 +127,9 @@ painstakingly-slow development."""
         #Sudo is required for some unknown reason.
         password = get_sudo_password()
         pull_shell = subprocess.Popen(("echo", password, "|", "sudo", "-S", "git", "pull"), shell=True)
-        error_code = pull_shell.poll()
+        stdout, stderr = pull_shell.communicate()
+        error_code = True
+        print(stdout, stderr)
         if error_code:
             raise Exception("Returned {err_code} from git pull".format(err_code=error_code))
         else:
@@ -131,6 +138,7 @@ painstakingly-slow development."""
 
 class Shutdown_Event(Event):
     """Shuts the server down. To be handled server-side only."""
+    listeners = set()
     def __init__(self):
         super().__init__()
     def handle(self, server):
@@ -138,7 +146,9 @@ class Shutdown_Event(Event):
         server.shutdown()
 
 class Restart_Event(Event):
-    """Restarts the server. Again, server-side only."""
+    """Restarts the server. Broadcast so clients can know to reconnect"""
+    broadcast = True
+    listeners = set()
     def __init__(self):
         super().__init__()
     def handle(self, server):
