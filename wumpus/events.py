@@ -2,7 +2,7 @@ import json, subprocess
 from collections.abc import Mapping
 import platform
 
-from utils import get_sudo_password
+from utils import get_git_password
 
 def bytify(arg):
     return json.dumps(_bytify(arg))
@@ -134,16 +134,12 @@ allows me to be even lazier than I would have to be to do it the Right Way.
         super().__init__()
     def handle(self, listener):
         print("Hello from updet")
-        #Sudo is required for some unknown reason.
-        password = get_sudo_password()
-        if platform.system() == "Linux":
-            cmd = ("echo", password, "|", "sudo", "-S", "git", "pull")
-        else:
-            cmd = ("git", "pull")
+        password = get_git_password()
+        cmd = ("git", "pull")
         pull_shell = subprocess.Popen(cmd, stdin=subprocess.PIPE, stderr=subprocess.PIPE,
                                         stdout=subprocess.PIPE, shell=False,
                                         universal_newlines=True)
-        stdout, stderr = pull_shell.communicate(input="superosog1")
+        stdout, stderr = pull_shell.communicate(input=password)
         error_code = True
         print(stdout, stderr, pull_shell)
         if error_code:
