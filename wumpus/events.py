@@ -1,8 +1,10 @@
 import json, subprocess
 from collections.abc import Mapping
 import platform
+import importlib
 
-from utils import get_git_password
+from wumpus.core import Player
+from wumpus.utils import get_git_password
 
 def bytify(arg):
     return json.dumps(_bytify(arg))
@@ -45,10 +47,13 @@ def debytify(byte_string):
     string = byte_string.decode("utf-8")
     print(string, "STRING")
     dictionary = json.loads(string)
-    try:
-        return locals()[dictionary["name"]].debytify(string)
-    except KeyError:
-        return Event()
+    print("locals", locals())
+    #This might raise exceptions, but that's fine. (There's no way to elegantly
+    #handle them here.)
+    module_name, cls_name = dictionary["name"].rsplit(".", 1)
+    module = importlib.import_module(module_name)
+    cls = getattr(module, cls_name)
+    return cls.debytify(string)
 class Event:
     #Determines whether the server will forward the event on to other clients or
 #not.
@@ -79,10 +84,12 @@ pretty sure this is a good idea, but I could maybe be wrong.
                 "kwargs": self.kwargs}
     def bytify(self):
         return bytify(self.jsonify())
-    @staticmethod
-    def debytify(json_val):
+    @classmethod
+    def debytify(cls, json_val):
         json_dict = json.loads(json_val)
-        return Event(*json_dict["args"], **json_dict["kwargs"])
+        return cls(*json_dict["args"], **json_dict["kwargs"])
+    def __eq__(self, other):
+        return self.args == other.args and self.kwargs == other.kwargs and self.name == other.name
 
 class Join_Event(Event):
     broadcast = True    
@@ -93,23 +100,12 @@ class Join_Event(Event):
     def handle(self, listener):
         #TODO: You know, add the client to the client list.
         listener.players.append(self.player)
-    def debytify(json_val):
+    
+    @classmethod
+    def debytify(cls, json_val):
         json_dict = json.loads(json_val)
-        #Join_Event(5,6,7, name="mark", pw="bob")
-        return Join_Event(*json_dict["args"], **json_dict["kwargs"])
-        #def spam(*args): return args[0], args[2]
-        #spam(5,6,7,8,9,10,11) -> (5,7)
-        #def blah(*args, **kwargs): return args, kwargs
-        #blah(1,2,3,4,5, (6,7,8), "walrus", name="sally", bob="boob", t=6) ->
-        #((1,2,3,4,5, (6,7,8), "walrus"), {"name": "sally", "bob": "boob", "t":
-        #6})
-
-        #def add(a, b, c): return sum(a,b,c)
-        #nums = [5,6,7]
-        #add(nums[0], nums[1], nums[2])
-        #add(*nums) == add(5,6,7) 
-
-        #def ignore(*args): pass 
+        player = Player.debytify(json_dict["args"])
+        return cls(player)
 
 class Update_Code_Event(Event):
     """Teehee. This event probably represents a fairly bad security hole. It allows clients
