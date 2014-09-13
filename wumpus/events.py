@@ -9,39 +9,6 @@ from wumpus.utils import get_git_password
 def bytify(arg):
     return json.dumps(_bytify(arg))
 
-def _bytify(arg):
-    """Woo recursion!"""
-    print("Start")
-    if hasattr(arg, "jsonify"):
-        print("Jsonify")
-        return _bytify(arg.jsonify())
-
-    known_types = [str, int, float, bool, type(None)]
-    if type(arg) in known_types:
-        print("Simple")
-        return arg
-    #If it's a mapping
-    if isinstance(arg, Mapping):
-        print("It's a map!")
-        def wrap(item):
-            return type(arg)(item)
-        return wrap({_bytify(key): _bytify(value) for (key, value) in arg.items()})
-    if hasattr(arg, "__iter__"):
-        print("Iter")
-        def wrap(item):
-            return type(arg)([item])
-        if len(arg) > 1:
-            head, *tail = arg
-
-            #Python doesn't do tail-call optimization anyway
-            return wrap(_bytify(head)) + wrap(_bytify(*tail))
-        elif len(arg) == 1:
-            return wrap(_bytify(arg[0]))
-        else:
-            return wrap([])
-    print("Fail")
-    raise ValueError("Unbytify-able object: {obj}".format(obj=arg))
-
 def debytify(byte_string):
     print("Start")
     string = byte_string.decode("utf-8")
@@ -94,11 +61,12 @@ pretty sure this is a good idea, but I could maybe be wrong.
 class Join_Event(Event):
     broadcast = True    
     listeners = set()
-    def __init__(self, player):
+    def __init__(self, player, *args, **kwargs):
         self.player = player
         super().__init__(args=(player,))
     def handle(self, listener):
         #TODO: You know, add the client to the client list.
+
         listener.players.append(self.player)
     
     @classmethod
@@ -126,7 +94,7 @@ allows me to be even lazier than I would have to be to do it the Right Way.
 
     broadcast = True
     listeners = set()
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         super().__init__()
     def handle(self, listener):
         print("Hello from updet")
@@ -147,7 +115,7 @@ allows me to be even lazier than I would have to be to do it the Right Way.
 class Shutdown_Event(Event):
     """Shuts the server down. To be handled server-side only."""
     listeners = set()
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         super().__init__()
     def handle(self, server):
         print("Got a shutfown")
@@ -157,8 +125,38 @@ class Restart_Event(Event):
     """Restarts the server. Broadcast so clients can know to reconnect"""
     broadcast = True
     listeners = set()
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         super().__init__()
     def handle(self, server):
         print("Restarting")
         server.restart()
+
+
+def _bytify(arg):
+    """Woo recursion!"""
+    print("Start")
+    if hasattr(arg, "jsonify"):
+        print("Jsonify")
+        return _bytify(arg.jsonify())
+
+    known_types = [str, int, float, bool, type(None)]
+    if type(arg) in known_types:
+        return arg
+    #If it's a mapping
+    if isinstance(arg, Mapping):
+        def wrap(item):
+            return type(arg)(item)
+        return wrap({_bytify(key): _bytify(value) for (key, value) in arg.items()})
+    if hasattr(arg, "__iter__"):
+        def wrap(item):
+            return type(arg)([item])
+        if len(arg) > 1:
+            head, *tail = arg
+
+            #Python doesn't do tail-call optimization anyway
+            return wrap(_bytify(head)) + wrap(_bytify(*tail))
+        elif len(arg) == 1:
+            return wrap(_bytify(arg[0]))
+        else:
+            return wrap([])
+    raise ValueError("Unbytify-able object: {obj}".format(obj=arg))

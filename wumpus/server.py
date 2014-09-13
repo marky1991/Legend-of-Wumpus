@@ -30,15 +30,15 @@ class Server(Network_Node, circuits.core.BaseComponent):
         events.Update_Code_Event().handle(self)
     
     def cleanup(self):
-        print("cleaning")
-        #self.fire(disconnect())
         self.node.stop()
         self.stop()
     
     def shutdown(self):
-        print("Shuting down")
         self.cleanup()
-        sys.exit(1)
+        #the fact that it tries to do this is gross.
+        #Will need to replace the functionality somehow.
+        #sys.exit(1)
     def restart(self):
         self.cleanup()
-        sys.exit(4)
+        #This is gross.
+        #sys.exit(4)

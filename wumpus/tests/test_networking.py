@@ -45,10 +45,15 @@ class testEvents:
         #Unmock the players attribute
         listener.players = []
         event = Join_Event(self.player)
+        
         old_player_count = len(listener.players)
+        old_client_count = len(listener.clients) if hasattr(listener, "clients") else 0
         event.handle(listener)
         assert old_player_count + 1 == len(listener.players), (old_player_count, len(listener.players))
-    
+        if listener.is_server:
+            assert len(listener.clients) == old_client_count + 1, (len(listener.clients), old_client_count + 1)
+
+
     @server_and_client
     def test_join_event_duplicate(self, listener):
         listener.players = []
