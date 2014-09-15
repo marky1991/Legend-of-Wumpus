@@ -10,11 +10,8 @@ def bytify(arg):
     return json.dumps(_bytify(arg))
 
 def debytify(byte_string):
-    print("Start")
     string = byte_string.decode("utf-8")
-    print(string, "STRING")
     dictionary = json.loads(string)
-    print("locals", locals())
     #This might raise exceptions, but that's fine. (There's no way to elegantly
     #handle them here.)
     module_name, cls_name = dictionary["name"].rsplit(".", 1)
@@ -66,8 +63,8 @@ class Join_Event(Event):
         super().__init__(args=(player,))
     def handle(self, listener):
         #TODO: You know, add the client to the client list.
-
-        listener.players.append(self.player)
+        if self.player not in listener.players:
+            listener.players.append(self.player)
     
     @classmethod
     def debytify(cls, json_val):

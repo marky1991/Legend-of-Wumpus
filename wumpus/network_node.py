@@ -36,7 +36,7 @@ information, but that day isn't today."""
                 #new = [blow_up, c=andle_on] -> []
                 caused_events = event.handle()
                 new_events.extend(caused_events)
-                if event.broadcast:
+                if event.broadcast and self.is_server:
                     self.broadcast(event)
                 for listener in type(event).listeners:
                     #This API doesn't yet exist.

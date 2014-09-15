@@ -21,6 +21,7 @@ class Client(Network_Node, circuits.core.BaseComponent):
         #it
         #This is GROOOOOSSSS
         self.server_channel = ""
+        #Eventually, I'll need to grab player name somehow.
         self.player = Player()
     def connect(self, host="0.0.0.0", port=50551):
         self.node.add("server", host, port)
