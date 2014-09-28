@@ -25,7 +25,7 @@ class Server(Network_Node, circuits.core.BaseComponent):
     @circuits.handler("connect")
     def connect(self, socket, host, port):
         self.sockets.add(socket)
-        client = Client(host, port)
+        client = Client(host, port, socket=spcket)
         self.clients[next(self.id_generator)] = client
     
     @circuits.handler("disconnect")
@@ -33,6 +33,10 @@ class Server(Network_Node, circuits.core.BaseComponent):
         #This is an intentionally local event
         print("Updating code")
         events.Update_Code_Event().handle(self)
+
+    def broadcast(self, event):
+        for client in self.clients:
+            self.fire(write(client.socket, bytify(event).encode("utf-8")))
     
     def cleanup(self):
         self.node.stop()

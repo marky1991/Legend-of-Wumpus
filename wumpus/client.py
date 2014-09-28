@@ -10,10 +10,11 @@ from .events import Join_Event
 from .core import Player
 
 class Client(Network_Node, circuits.core.BaseComponent):
-    def __init__(self, host="0.0.0.0", port=50552):
+    def __init__(self, host="0.0.0.0", port=50552, socket=None):
         super().__init__()
         self.node = Node((self.host, self.port))
         self.node.register(self)
+        self.socket = socket
         print(self.fire, "FRE")
         #This is the channel that the server's client is listening on.
         #The fact that I have to use this to talk exclusively to the server strongly
