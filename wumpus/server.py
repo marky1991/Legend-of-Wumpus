@@ -25,7 +25,7 @@ class Server(Network_Node, circuits.core.BaseComponent):
     @circuits.handler("connect")
     def connect(self, socket, host, port):
         self.sockets.add(socket)
-        client = Client(host, port, socket=spcket)
+        client = Client(host, port, socket=socket)
         self.clients[next(self.id_generator)] = client
     
     @circuits.handler("disconnect")
