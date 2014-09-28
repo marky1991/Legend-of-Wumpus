@@ -2,7 +2,7 @@ import circuits
 import sys
 from itertools import count
 
-from circuits.net.events import disconnect
+from circuits.net.events import write, disconnect
 from . import events
 from circuits.node import Node
 import itertools
