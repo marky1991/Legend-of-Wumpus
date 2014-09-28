@@ -1,6 +1,8 @@
 import circuits
 from circuits.node import remote
+from circuits.net.events import connect, write
 from . import events
+from .events import bytify
 
 class Network_Node:
     """Represents a node (In the graph-theory sense) in the network. 
@@ -17,8 +19,13 @@ information, but that day isn't today."""
         super().__init__()
     @circuits.handler("read")
     def read(self, socket, data):
+        print("Reading", self, self.is_server)
         event = events.debytify(data)
+        print(event, event.broadcast)
         old_events = new_events = event.handle(self)
+        if event.broadcast and self.is_server:
+            print(self.broadcast, "BROADCASTING")
+            self.broadcast(event)
         #old = new = [BBevent]
         #Hmm. This implementation assumes a finite event
         #set is returned. This might be hurtful. (But for any sane event, it isn't.
@@ -32,6 +39,7 @@ information, but that day isn't today."""
             #new = []
             new_events = []
             for event in old_events:
+                print("Event", event)
                 #old = [bb] -> [blow, candle]
                 #new = [blow_up, c=andle_on] -> []
                 caused_events = event.handle()
@@ -53,7 +61,9 @@ information, but that day isn't today."""
         #Surely it was a temporary ujnk piece cof code.
 
         #Actual broadcasting logic needs to be added.
-        raise NotImplementedError("Nope")
+        print("Broadcasting event")
+        self.fire(write(bytify(event).encode("utf-8")))
+        #raise NotImplementedError("Nope")
         
         #self.fire(remote(connect(("0.0.0.0", 50551)), "server"))
     

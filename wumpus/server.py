@@ -1,10 +1,12 @@
 import circuits
 import sys
+from itertools import count
 
 from circuits.net.events import disconnect
 from . import events
 from circuits.node import Node
 import itertools
+from .client import Client
 from .network_node import Network_Node
 
 class Server(Network_Node, circuits.core.BaseComponent):
@@ -15,13 +17,16 @@ class Server(Network_Node, circuits.core.BaseComponent):
         #This is a temporary design. Ultimately this will be part of a client.
         #This is just here until clients are implemented
         self.sockets = set()
-        self.id_generator = itertools.count()
+        self.id_generator = count()
         self.node = Node((self.host, self.port))
         self.node.register(self)
+        self.id_generator = count() 
             
     @circuits.handler("connect")
     def connect(self, socket, host, port):
         self.sockets.add(socket)
+        client = Client(host, port)
+        self.clients[next(self.id_generator)] = client
     
     @circuits.handler("disconnect")
     def disconnect(self, socket):

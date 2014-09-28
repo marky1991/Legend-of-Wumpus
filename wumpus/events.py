@@ -5,7 +5,6 @@ import importlib
 
 from wumpus.core import Player
 from wumpus.utils import get_git_password
-
 def bytify(arg):
     return json.dumps(_bytify(arg))
 
@@ -60,7 +59,7 @@ class Join_Event(Event):
     listeners = set()
     def __init__(self, player, *args, **kwargs):
         self.player = player
-        super().__init__(args=(player,))
+        super().__init__(player)
     def handle(self, listener):
         #TODO: You know, add the client to the client list.
         if self.player not in listener.players:
@@ -69,7 +68,10 @@ class Join_Event(Event):
     @classmethod
     def debytify(cls, json_val):
         json_dict = json.loads(json_val)
-        player = Player.debytify(json_dict["args"])
+        player_dict = json_dict["args"][0]
+        name, team = player_dict["name"], player_dict["team"]
+        player = Player(name)
+        player.team = team
         return cls(player)
 
 class Update_Code_Event(Event):
@@ -131,9 +133,7 @@ class Restart_Event(Event):
 
 def _bytify(arg):
     """Woo recursion!"""
-    print("Start")
     if hasattr(arg, "jsonify"):
-        print("Jsonify")
         return _bytify(arg.jsonify())
 
     known_types = [str, int, float, bool, type(None)]

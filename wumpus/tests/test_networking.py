@@ -6,6 +6,7 @@ from wumpus.events import *
 from wumpus.server import Server
 from wumpus.tests.mock import FakeServer, FakeClient
 from wumpus.core import Player
+from wumpus.network_node import Network_Node
 
 def server_and_client(function):
     @wraps(function)
@@ -33,27 +34,27 @@ class testEvents:
         event = Join_Event(self.player)
         
         old_player_count = len(listener.players)
-        old_client_count = len(listener.clients) if hasattr(listener, "clients") else 0
         event.handle(listener)
         assert old_player_count + 1 == len(listener.players), (old_player_count, len(listener.players))
-        if listener.is_server:
-            assert len(listener.clients) == old_client_count + 1, (len(listener.clients), old_client_count + 1)
 
     def test_event_broadcasting(self):
+        import functools
         self.client.players = []
         self.server.players = []
         self.client2.players = []
         self.server.clients = {}
-        self.server.broadcast = Server.broadcast
+        self.server.broadcast = functools.partial(Server.broadcast, self.server)
+        self.server.read = functools.partial(Server.read, self.server)
+        self.server.is_server = True#functools.partial(Network_Node.is_server, self.server)
+        self.client.is_server = False#functools.partial(Network_Node.is_server, self.client)
+        self.client2.is_server = False#functools.partial(Network_Node.is_server, self.client2)
         event = Join_Event(self.player)
-        event.handle(self.server)
-        assert len(self.server.clients) == 1, self.server.clients
+        #event.handle(self.server)
+        print(self.server.read, "REAd")
+        self.server.read(None, bytify(event).encode("utf-8"))
+        assert len(self.server.players) == 1, self.server.clients
         event2 = Join_Event(self.player2)
-        event.handle(self.server)
-        assert len(self.server.clients) == 2
-        assert len(self.client.players) == 2, """Client1 players: {client1_players}.
-                                                Server players: {server_players}. 
-                                                Client2 players: {client2_players}
-                                                """.format(client1_players=self.client.players,
-                                                           client2_players=self.client2.players,
-                                                           server_players=self.server.players)
+        #event.handle(self.server)
+        self.server.read(None, bytify(event2).encode("utf-8"))
+        assert len(self.server.players) == 2, self.server.players
+        assert len(self.client2.players) == 2, self.client2.players
