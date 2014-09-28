@@ -4,6 +4,7 @@ from itertools import count
 
 from circuits.net.events import write, disconnect
 from . import events
+from .events import bytify
 from circuits.node import Node
 import itertools
 from .client import Client
@@ -34,8 +35,10 @@ class Server(Network_Node, circuits.core.BaseComponent):
         print("Updating code")
         events.Update_Code_Event().handle(self)
 
-    def broadcast(self, event):
-        for client in self.clients:
+    def broadcast(self, event, exclude_list=None):
+        exclude_list = exclude_list or []
+        for client in filter(lambda client: client not in exclude_list,
+                            self.clients.values()):
             self.fire(write(client.socket, bytify(event).encode("utf-8")))
     
     def cleanup(self):

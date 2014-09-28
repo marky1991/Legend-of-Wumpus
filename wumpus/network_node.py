@@ -18,14 +18,21 @@ information, but that day isn't today."""
         #Object can't handle host and port, so don't pass them.
         super().__init__()
     @circuits.handler("read")
-    def read(self, socket, data):
+    def read(self, *args):
+        print("Hiii")
+        if len(args) == 1:
+            socket = None
+            data = args[0]
+        else:
+            socket, data = args
         print("Reading", self, self.is_server)
         event = events.debytify(data)
-        print(event, event.broadcast)
         old_events = new_events = event.handle(self)
         if event.broadcast and self.is_server:
             print(self.broadcast, "BROADCASTING")
-            self.broadcast(event)
+            source_client = filter(lambda client: client.socket == socket,
+                                  self.clients)
+            self.broadcast(event, exclude_list=list(source_client))
         #old = new = [BBevent]
         #Hmm. This implementation assumes a finite event
         #set is returned. This might be hurtful. (But for any sane event, it isn't.
@@ -56,7 +63,7 @@ information, but that day isn't today."""
                 #    new_events = []
     def shutdown(self):
         self.stop()
-    def broadcast(self, event):
+    def broadcast(self, event, exclude_list=None):
         #I'm not even sure what this code was trying to do...
         #Surely it was a temporary ujnk piece cof code.
 

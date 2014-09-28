@@ -64,6 +64,7 @@ class Join_Event(Event):
         #TODO: You know, add the client to the client list.
         if self.player not in listener.players:
             listener.players.append(self.player)
+        print(listener.players)
     
     @classmethod
     def debytify(cls, json_val):

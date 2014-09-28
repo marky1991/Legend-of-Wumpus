@@ -33,4 +33,3 @@ class Client(Network_Node, circuits.core.BaseComponent):
         #self.fire(remote(write(Join_Event(self.player).bytify()), "server"))
         self.fire(write(Join_Event(self.player).bytify().encode("utf-8")), self.server_channel)
         print("Finished")
-
