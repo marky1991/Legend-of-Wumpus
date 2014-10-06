@@ -62,9 +62,15 @@ class Join_Event(Event):
         super().__init__(player)
     def handle(self, listener):
         #TODO: You know, add the client to the client list.
-        if self.player not in listener.players:
-            listener.players.append(self.player)
-        print(listener.players)
+        #This is breaking OOP guidelines, but I don't see the point
+        #in adding a trivial method right now. Will improve design
+        #if it ends up being needed.
+        listener.game.players.add(self.player)
+        if not listener.is_server:
+            if self.player == listener.player:
+                #For now hardcoding the view as curses
+                listener.view = Curses_View()
+                listener.view.setup()
     
     @classmethod
     def debytify(cls, json_val):

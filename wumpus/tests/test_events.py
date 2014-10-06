@@ -43,16 +43,14 @@ class testEvents:
     @server_and_client
     def test_join_event(self, listener):
         #Unmock the players attribute
-        listener.players = []
         event = Join_Event(self.player)
-        old_player_count = len(listener.players)
+        old_player_count = len(listener.game.players)
         event.handle(listener)
-        assert old_player_count + 1 == len(listener.players), (old_player_count, len(listener.players))
+        assert old_player_count + 1 == len(listener.game.players), (old_player_count, len(listener.game.players))
     
     @server_and_client
     def test_join_event_duplicate(self, listener):
-        listener.players = []
         event = Join_Event(self.player)
         event.handle(listener)
         event.handle(listener)
-        assert len(listener.players) == 1, listener.players
+        assert len(listener.game.players) == 1, listener.game.players

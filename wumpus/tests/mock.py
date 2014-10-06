@@ -3,7 +3,7 @@ from socket import socket
 
 from wumpus.server import Server
 from wumpus.client import Client
-from wumpus.core import Player
+from wumpus.core import Player, Game
 
 example_server = Server("0.0.0.0")
 example_server.shutdown()
@@ -14,10 +14,16 @@ example_socket.close()
 
 #It's a function (factory) that's pretending to be a class.
 def FakeServer():
-    return MagicMock(spec=example_server)
+    server = MagicMock(spec=example_server)
+    server.game = Game()
+    server.running = False
+    return server
 
 def FakeClient():
-    return MagicMock(spec=example_client)
+    client = MagicMock(spec=example_client)
+    client.game = Game()
+    client.running = False
+    return client
 
 def FakeSocket():
     return MagicMock(spec=example_socket)

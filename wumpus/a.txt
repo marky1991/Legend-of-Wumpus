@@ -1,0 +1,171 @@
+setting next
+setting next
+Finished onstart
+setting next
+Finished onstart
+cnext screen
+setting next
+Finished onstart
+cnext screen
+setting next
+Finished onstart
+cnext screen
+switching
+Finished onstart
+cnext screen
+switching
+Finished onstart
+cnext screen
+switching
+Finished onstart
+cnext screen
+switching
+Finished onstart
+cnext screen
+switching
+Finished onstart
+cnext screen
+switching
+Finished onstart
+cnext screen
+switching
+Finished onstart
+setting next
+Finished onstart
+cnext screen
+switching
+Finished onstart
+setting next
+Finished onstart
+cnext screen
+setting next
+setting next
+Finished onstart
+cnext screen
+setting next
+Finished onstart
+cnext screen
+setting next
+Finished onstart
+cnext screen
+setting next
+Finished onstart
+cnext screen
+<wumpus.views.Login_View object at 0x7f6065686860>,oprevious view
+setting next,<class 'wumpus.views.Lobby_View'>
+Finished onstart
+cnext screen
+<wumpus.views.Login_View object at 0x7f8244f16860>,oprevious view
+setting next,<class 'wumpus.views.Lobby_View'>
+Finished onstart
+cnext screen
+<wumpus.views.Login_View object at 0x7f85c5e2e860>,oprevious view,<class 'wumpus.views.Lobby_View'>
+setting next,<class 'wumpus.views.Lobby_View'>
+Finished onstart
+cnext screen
+<wumpus.views.Login_View object at 0x7f9ffde637f0>,oprevious view,<class 'wumpus.views.Lobby_View'>
+adding room name
+switching
+Finished onstart
+cnext screen
+<wumpus.views.Login_View object at 0x7f9ffde637f0>,oprevious view,<class 'wumpus.views.Lobby_View'>
+adding room name
+switching
+Finished onstart
+cnext screen
+<wumpus.views.Login_View object at 0x7f9ffde637f0>,oprevious view,<class 'wumpus.views.Lobby_View'>
+adding room name
+switching
+Finished onstart
+cnext screen
+<wumpus.views.Login_View object at 0x7f9ffde637f0>,oprevious view,<class 'wumpus.views.Lobby_View'>
+adding room name
+switching
+Finished onstart
+setting next,<class 'wumpus.views.Lobby_View'>
+Finished onstart
+Actually doing the switch
+<wumpus.views.Login_View object at 0x7fa04f04e7f0>,oprevious view,<class 'wumpus.views.Lobby_View'>
+adding room name
+switching
+Finished onstart
+Actually doing the switch
+<wumpus.views.Login_View object at 0x7fa04f04e7f0>,oprevious view,<class 'wumpus.views.Lobby_View'>
+adding room name
+switching
+Finished onstart
+setting next,<class 'wumpus.views.Lobby_View'>
+Finished onstart
+Actually doing the switch
+<wumpus.views.Login_View object at 0x7f7266c0e7f0>,oprevious view,<class 'wumpus.views.Lobby_View'>
+adding room name
+switching
+Finished onstart
+Actually doing the switch
+<wumpus.views.Login_View object at 0x7f7266c0e7f0>,oprevious view,<class 'wumpus.views.Lobby_View'>
+adding room name
+switching
+Finished onstart
+Actually doing the switch
+<wumpus.views.Login_View object at 0x7f7266c0e7f0>,oprevious view,<class 'wumpus.views.Lobby_View'>
+adding room name
+switching
+Finished onstart
+Actually doing the switch
+<wumpus.views.Login_View object at 0x7f7266c0e7f0>,oprevious view,<class 'wumpus.views.Lobby_View'>
+adding room name
+switching
+Finished onstart
+Actually doing the switch
+<wumpus.views.Login_View object at 0x7f7266c0e7f0>,oprevious view,<class 'wumpus.views.Lobby_View'>
+adding room name
+switching
+Finished onstart
+Actually doing the switch
+<wumpus.views.Login_View object at 0x7f7266c0e7f0>,oprevious view,<class 'wumpus.views.Lobby_View'>
+adding room name
+switching
+Finished onstart
+Actually doing the switch
+<wumpus.views.Login_View object at 0x7f7266c0e7f0>,oprevious view,<class 'wumpus.views.Lobby_View'>
+adding room name
+switching
+Finished onstart
+Actually doing the switch
+<wumpus.views.Login_View object at 0x7f7266c0e7f0>,oprevious view,<class 'wumpus.views.Lobby_View'>
+adding room name
+switching
+Finished onstart
+Actually doing the switch
+<wumpus.views.Login_View object at 0x7f7266c0e7f0>,oprevious view,<class 'wumpus.views.Lobby_View'>
+adding room name
+switching
+Finished onstart
+Actually doing the switch
+<wumpus.views.Login_View object at 0x7f7266c0e7f0>,oprevious view,<class 'wumpus.views.Lobby_View'>
+adding room name
+switching
+Finished onstart
+Actually doing the switch
+<wumpus.views.Login_View object at 0x7f7266c0e7f0>,oprevious view,<class 'wumpus.views.Lobby_View'>
+adding room name
+switching
+Finished onstart
+setting next,<class 'wumpus.views.Lobby_View'>
+Finished onstart
+Actually doing the switch
+<wumpus.views.Login_View object at 0x7f5df8dac898>,oprevious view,<class 'wumpus.views.Lobby_View'>
+adding room name
+setting next,<class 'wumpus.views.Lobby_View2'>
+switching
+Finished onstart
+Actually doing the switch
+<wumpus.views.Login_View object at 0x7f5df8dac898>,oprevious view,<class 'wumpus.views.Lobby_View2'>
+adding room name
+switching
+Finished onstart
+Actually doing the switch
+<wumpus.views.Login_View object at 0x7f5df8dac898>,oprevious view,<class 'wumpus.views.Lobby_View2'>
+adding room name
+switching
+Finished onstart

@@ -3,6 +3,7 @@ from circuits.node import remote
 from circuits.net.events import connect, write
 from . import events
 from .events import bytify
+from .core import Game
 
 class Network_Node:
     """Represents a node (In the graph-theory sense) in the network. 
@@ -11,21 +12,20 @@ game-specific. (So feel free to put in wumpus-related information.)
 Maybe one day the design will justify splitting this out from the game-related
 information, but that day isn't today."""
     def __init__(self, host="0.0.0.0", port=0):
-        #We likely want to iterate over the player list in a stable order
-        self.players = []
         self.host = host
         self.port = port
+        self.game = Game()
+        self.view = None
         #Object can't handle host and port, so don't pass them.
         super().__init__()
     @circuits.handler("read")
     def read(self, *args):
-        print("Hiii")
+        #If the len of the args is 1, we're a client
         if len(args) == 1:
             socket = None
             data = args[0]
         else:
             socket, data = args
-        print("Reading", self, self.is_server)
         event = events.debytify(data)
         old_events = new_events = event.handle(self)
         if event.broadcast and self.is_server:
@@ -61,19 +61,16 @@ information, but that day isn't today."""
                 #if caused_events is None:
                 #    self.shutdown()
                 #    new_events = []
+
+    def update(self):
+        self.game.update()
+        self.view.update()
     def shutdown(self):
         self.stop()
     def broadcast(self, event, exclude_list=None):
-        #I'm not even sure what this code was trying to do...
-        #Surely it was a temporary ujnk piece cof code.
-
-        #Actual broadcasting logic needs to be added.
         print("Broadcasting event")
-        self.fire(write(bytify(event).encode("utf-8")))
-        #raise NotImplementedError("Nope")
-        
-        #self.fire(remote(connect(("0.0.0.0", 50551)), "server"))
-    
+        self.fire(write(bytify(event).encode("utf-8")))   
+
     @property
     def is_server(self):
         #This is a pretty defining feature for a server

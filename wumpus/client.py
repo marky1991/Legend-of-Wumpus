@@ -8,6 +8,7 @@ from circuits.node import Node, remote
 from .network_node import Network_Node
 from .events import Join_Event
 from .core import Player
+from . import views
 
 class Client(Network_Node, circuits.core.BaseComponent):
     def __init__(self, host="0.0.0.0", port=50552, socket=None):
@@ -15,7 +16,6 @@ class Client(Network_Node, circuits.core.BaseComponent):
         self.node = Node((self.host, self.port))
         self.node.register(self)
         self.socket = socket
-        print(self.fire, "FRE")
         #This is the channel that the server's client is listening on.
         #The fact that I have to use this to talk exclusively to the server strongly
         #suggests that either circuits' API is all sorts of broken or I horribly misunderstand
@@ -33,3 +33,10 @@ class Client(Network_Node, circuits.core.BaseComponent):
         #self.fire(remote(write(Join_Event(self.player).bytify()), "server"))
         self.fire(write(Join_Event(self.player).bytify().encode("utf-8")), self.server_channel)
         print("Finished")
+    def go(self):
+        self.view = views.Login_View()
+        self.start()
+        self.view.run()
+
+    def update(self):
+        self.game.update()
