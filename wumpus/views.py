@@ -1,13 +1,16 @@
-import itertools
-
+import itertools, os
+import types
 try:
     import npyscreen as curses
 except ImportError:
     curses= None
 try:
     import pyglet
+    import kytten
 except ImportError:
-    pyglet = None
+    kytten = None
+
+mode = "pyglet"
 
 #TEmporary hack
 #(Npyscreen makes true proint() awful)
@@ -16,28 +19,22 @@ def print(*args):
     f.write(",".join(map(str, args))+"\n")
     f.close()
 
-
 def calc_screen_type():
-    #TODO: Add a setting to set this instead of always doing curses.\
-    return Pyglet_View
+    #TODO: Add a (better) setting to set this
+    if mode == "pyglet":
+        return Pyglet_View
     return Curses_View
 
 #Yeah, it turns out I needed a global context for the gui after all. : )
 class GUI:
     def __init__(self, previous_view=None):
+        super().__init__()
         self.view = None
+        self.window = None
 
     def update(self):
         """Duh."""
         self.view.update()
-    def text_box(self, label=None, secret=False):
-        """This function attaches it to the screen, whether you assign it to
-        self (e.g. self.blah = return_value) or not. So don't forget to bind
-        it to self.
-        
-        If secret is true, the values are to be hidden. (Replaced with
-        asterisks, for example)"""
-        return self.view.text_box(self, label=label, secret=secret)
     def set_next_screen(self, screen_class):
         """Lets the GUI know what window we're going to go to next. Sets up
         any information that next_screen will need to do its work."""
@@ -46,78 +43,85 @@ class GUI:
         """Switches the current screen to the one set up by set_next_screen."""
         pass
     def run(self):
-        self.view.setup(self)
-        self.view.run()
+        self.view.setup()
+        try:
+            super().run()
+        except AttributeError:
+            pass
+    @property
+    def height(self):
+        return 0
+
+    @property
+    def width(self):
+        return 0
 
 class View:
-    def __init__(self, previous_view=None):
+    def __init__(self, gui, previous_view=None):
         """Right now, this is pointless. Just indicates the interface.
         If it never becomes functional, to-be-removed."""
+        super().__init__()
         self.screen = None
+        self.gui = gui
         #This is a function that when called (takes no arguments) switches the screen
         #I don't think this belongs in View, but I don't remmeber.
         self.next_screen_function = None
 
-    def setup(self, gui):
+    def setup(self):
         """Resonsible for configuring the GUI. Is only called for the first view."""
         pass
     def update(self):
         """Duh."""
         pass
-    def text_box(self, label=None, secret=False):
+    def text_box(self, x=None, y=None, label=None, secret=False):
         """This function attaches it to the screen, whether you assign it to
         self (e.g. self.blah = return_value) or not. So don't forget to bind
         it to self.
         
         If secret is true, the values are to be hidden. (Replaced with
-        asterisks, for example)"""
+        asterisks, for example)
+        
+        Whatever type of object this returns, it has to have height, width, x, and y attributes.
+        All other information about the object is undefined."""
         pass
-    def set_next_screen(self, screen_class):
-        """Lets the GUI know what window we're going to go to next. Sets up
-        any information that next_screen will need to do its work."""
-        pass
-    def next_screen(self):
-        """Switches the current screen to the one set up by set_next_screen."""
+    def run(self):
         pass
 
 if curses:
-    class Curses_View(curses.NPSAppManaged, View):
-        """Implementation note: To support both pygame and curses with the same API,
-        I have to do some awkward juggling. Each view has to be an application.
-        The first view (login view typically, but it doesn't have to be) gets run
-        as an actual npyscreen application. The rest just get their various methods
-        called when we switch to them. This pattern allows us to switch between
-        view at will without having to consider a global "application". (which 
-        isn't needed for pygame, as no such thing exists, and goes against how
-        I want to design this.) (The application is stored in the view though.)"""
-        def __init__(self, previous_view=None):
-            if previous_view is None:
-                super().__init__()
-            self.application = previous_view.application if previous_view is not None else None
-            self.planned_widgets = []
-
+    class Curses_GUI(GUI, curses.NPSAppManaged):
+        def __init__(self):
+            super().__init__()
         def onStart(self, form_name=None):
             self.screen = curses.Form()
             if form_name is None:
-                if self.application is None:
-                    form_name = "MAIN"
-                else:
-                    raise Exception("not one")
-                    form_name = type(self).__name__
+                form_name = "MAIN"
             self.registerForm(form_name, self.screen)
 
-            for parms in self.planned_widgets:
+            for parms in self.view.planned_widgets:
                 args, kwargs = parms
                 self.screen.add(*args, **kwargs)
 
             self.planned_widgets = []
             print("Finished onstart")
             self.screen.afterEditing = lambda: self.next_screen()
+        def run(self):
+            super().run()
+    if mode != "pyglet":
+        GUI = Curses_GUI
+    class Curses_View(View):
+        def __init__(self, gui, previous_view=None):
+            self.planned_widgets = []
+            super().__init__(gui)
+
+        def setup(self):
+            pass
 
         def add_widget(self, args):
             self.planned_widgets.append(args)
 
-        def text_box(self, label=None, secret=False):
+        def text_box(self, label=None, x=None, y=None, secret=False):
+            #This currently does NOT follow the API. Needs to return an object
+            #with width, height, x, and y. TODO
             if not secret:
                 cls = curses.TitleText
             else:
@@ -131,12 +135,11 @@ if curses:
             #Due to the way npyscreen works, I can't do this in __init__
             def switch_screen(self):
                 #So application is set only once we try to switch to another view
-                self.application = self
                 #HAAACK
                 print(self, "oprevious view", screen_class)
                 screen_class.__init__(self, previous_view=self)
                 print("switching")
-                screen_class.onStart(self, form_name=screen_class.__name__)
+                self.gui.onStart(self)
                 self.setNextForm(screen_class.__name__)
             self.next_screen_function = lambda: switch_screen(self)
 
@@ -144,34 +147,65 @@ if curses:
             print("Actually doing the switch")
             self.next_screen_function()
 
-if pyglet:
+if kytten:
+    class Pyglet_GUI(GUI):
+        def run(self):
+            pyglet.app.run()
+        
+        @property
+        def height(self):
+            return self.window.height
+
+        @property
+        def width(self):
+            return self.window.width
+    if mode == "pyglet":
+        GUI = Pyglet_GUI
     class Pyglet_View(View):
-        def __init__(self):
+        def __init__(self, gui):
+            super().__init__(gui)
             self.widgets = []
-        def setup(self, gui):
-            gui.window = pyglet.window.Window()
+            gui.window = pyglet.window.Window(resizable=True)
+            gui.group=pyglet.graphics.OrderedGroup(0)
+            self.theme = kytten.Theme("/home/mark/Proyectos/Kytten/theme/", override={
+                "gui_color": [255, 235, 128, 255]})
+            self.gui.window.register_event_type("on_update")
+            def update(dt):
+                self.gui.window.dispatch_event("on_update", dt)
+            pyglet.clock.schedule(update)
+            gui.batch = pyglet.graphics.Batch()
             @gui.window.event
             def on_draw():
                 gui.window.clear()
-                for widget in self.widgets:
-                    widget.draw()
-        def text_box(self, label=None, secret=False):
-            label = pyglet.text.Label("Hello, world!")
-            self.widgets.append(label)
-        def run(self):
-            pyglet.app.run()
+                gui.batch.draw()
+                #for widget in self.widgets:
+                #    widget.draw()
+
+        def setup(self):
+            pass
+        def text_box(self, label=None, x=None, y=None,  secret=False):
+            x = ((x or 0) / 100) * self.gui.width
+            y = ((y or 0) / 100) * self.gui.height
+            box = kytten.Dialog( 
+                kytten.HorizontalLayout([
+                    kytten.Label(label),
+                    kytten.Input()]
+                ), theme=self.theme, anchor=kytten.ANCHOR_TOP_LEFT, batch=self.gui.batch, offset=(x, -y), group=self.gui.group, window=self.gui.window)
+            self.widgets.append(box)
+            box.do_layout()
+            return box
 
 class Login_View(calc_screen_type()):
-    def __init__(self, previous_view=None):
-        if previous_view is None:
-            super().__init__()
-        self.username = self.text_box("Username:", x, y)
-        self.password = self.text_box("Password:", x, y, secret=True)
-        self.server_url = self.text_box("Server Url:")
-        self.set_next_screen(Lobby_View)
+    def __init__(self, gui, previous_view=None):
+        super().__init__(gui)
+        #Wow, this API ended up god-awful. It works (for pyglet anyway), but man is it hideous
+        #Fixing this is a priority.
+        self.username = self.text_box("Username:", 20, 20)
+        self.password = self.text_box("Password:", 20, 100*(((self.gui.height - self.username.y) + self.username.height) / self.gui.height), secret=True)
+        self.server_url = self.text_box("Server Url:", 20, 100*((self.gui.height - self.password.y) + self.password.height)/self.gui.height)
+        self.gui.set_next_screen(Lobby_View)
 
 class Lobby_View(calc_screen_type()):
-    def __init__(self, previous_view=None):
-        if previous_view is None:
-            super().__init__()
+    def __init__(self, gui, previous_view=None):
+        super().__init__(gui)
         self.room_name = self.text_box("Room name:")

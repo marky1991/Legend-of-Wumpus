@@ -34,10 +34,10 @@ class Client(Network_Node, circuits.core.BaseComponent):
         self.fire(write(Join_Event(self.player).bytify().encode("utf-8")), self.server_channel)
         print("Finished")
     def go(self):
-        self.view = views.GUI()
-        self.view.view = views.Login_View()
+        self.gui = views.GUI()
+        self.gui.view = views.Login_View(self.gui)
         self.start()
-        self.view.run()
+        self.gui.run()
 
     def update(self):
         self.game.update()
