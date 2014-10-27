@@ -10,7 +10,11 @@ try:
 except ImportError:
     kytten = None
 
-mode = "pyglet"
+mode = "curses"
+
+#Percent of the screen (either height or width, depending) to put between each
+#widget
+WIDGET_SPACING = 5
 
 #TEmporary hack
 #(Npyscreen makes true proint() awful)
@@ -190,7 +194,7 @@ if kytten:
                 kytten.HorizontalLayout([
                     kytten.Label(label),
                     kytten.Input()]
-                ), theme=self.theme, anchor=kytten.ANCHOR_TOP_LEFT, batch=self.gui.batch, offset=(x, -y), group=self.gui.group, window=self.gui.window)
+                ), theme=self.theme,anchor=kytten.ANCHOR_BOTTOM_LEFT, batch=self.gui.batch, offset=(x, y), group=self.gui.group, window=self.gui.window)
             self.widgets.append(box)
             box.do_layout()
             return box
@@ -200,9 +204,9 @@ class Login_View(calc_screen_type()):
         super().__init__(gui)
         #Wow, this API ended up god-awful. It works (for pyglet anyway), but man is it hideous
         #Fixing this is a priority.
-        self.username = self.text_box("Username:", 20, 20)
-        self.password = self.text_box("Password:", 20, 100*(((self.gui.height - self.username.y) + self.username.height) / self.gui.height), secret=True)
-        self.server_url = self.text_box("Server Url:", 20, 100*((self.gui.height - self.password.y) + self.password.height)/self.gui.height)
+        self.username = self.text_box("Username:", 20, 80)
+        self.password = self.text_box("Password:", 20, 100*((self.username.y - self.username.height - WIDGET_SPACING) / self.gui.height), secret=True)
+        self.server_url = self.text_box("Server Url:", 20, 100*((self.password.y - self.password.height - WIDGET_SPACING) /self.gui.height))
         self.gui.set_next_screen(Lobby_View)
 
 class Lobby_View(calc_screen_type()):
