@@ -81,4 +81,22 @@ class testUtils:
                     "Distributativity of addition over max failed:", (x, y, z))
         assert x + min([y, z]) == min([x+y, x+z]), (
                     "Distributativity of addition over min failed:", (x, y, z))
-    
+   
+    def test_value(self):
+        dummy = Dummy_Object(3, 7)
+        x = Lazy_Coord(dummy, "x")
+        y = Lazy_Coord(dummy, "y")
+        z = Lazy_Coord(dummy, "y") + 4
+
+        assert float(x) == 3.0, ("Basic value checking failed: ", (float(x), 3.0))
+        assert int(y) == 7, ("Int value checking failed: ", (int(y), 7))
+        assert float(z) == 11, ("Lazy + Scalar failed: ", (float(z), 11))
+        assert float(x - 3) == 0, ("Lazy - scalar failed: ", (float(x - 3), 0))
+        assert float(x * 4) == 12, ("Lazy * scalar failed: ", (float(x * 3), 12))
+        assert float(z / 22) == .5, ("Lazy / scalar failed: ", (float(z / 22), .5))
+        assert float(y ** 3) == 7**3, ("Lazy ** scalar failed: ", (float(y**3), 7**3)) 
+        assert float(x + y) == (7 + 3), ("Lazy + Lazy failed: ", (float(x + y), (7 + 3)))
+        assert float(y - x) == 4, ("Lazy - Lazy failed: ", (float(y - x), 4))
+        assert float(x * y) == 21, ("Lazy * lazy failed: ", (float(x * y), 21))
+        assert float(x / y) == 3/7, ("Lazy / Lazy failed: ", (float(x / y), 3/7))
+        assert float(y ** x) == 7**3, ("Lazy ** lazy failed: ", (float(y ** x), 7**3))

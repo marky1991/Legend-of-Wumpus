@@ -35,9 +35,12 @@ class Client(Network_Node, circuits.core.BaseComponent):
         print("Finished")
     def go(self):
         self.gui = views.GUI()
-        self.gui.view = views.Login_View(self.gui)
+        print("Made gui")
+        self.gui.set_next_screen(views.Login_View)
         self.start()
+        print("Srtarting gui")
         self.gui.run()
+        print("Started")
 
     def update(self):
         self.game.update()

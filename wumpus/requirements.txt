@@ -1,0 +1,5 @@
+circuits==3.0
+-e git+https://github.com/marky1991/Kytten.git@20f20a4f2e7a3aee89fa8f68788fb76336013b20#egg=kytten-master
+nose==1.3.4
+npyscreen==4.5.0
+pyglet==1.2

@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from wumpus.client import Client
 from circuits import Debugger
 from circuits.net.events import connect 
