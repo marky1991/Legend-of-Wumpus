@@ -1,0 +1,161 @@
+curses
+curses
+[<class 'wumpus.views.views.Login_View'>, <class 'wumpus.views.views.Menu_View'>],VIEWS
+setting next,<class 'wumpus.views.views.Login_View'>,None
+Setting up gui
+<class 'wumpus.views.views.Login_View'>,{'form_name': 'MAIN'}
+<class 'wumpus.views.views.Menu_View'>,{}
+Calling next
+Actually doing the switch
+None,previous view,<class 'wumpus.views.views.Login_View'>
+switching
+Called it
+Setting up
+Adding widgets
+setting next,<class 'wumpus.views.views.Menu_View'>,<wumpus.views.views.Login_View object at 0x7fe74334fa20>
+curses
+[<class 'wumpus.views.views.Login_View'>, <class 'wumpus.views.views.Menu_View'>],VIEWS
+setting next,<class 'wumpus.views.views.Login_View'>,None
+Setting up gui
+<class 'wumpus.views.views.Login_View'>,{'form_name': 'MAIN'}
+<class 'wumpus.views.views.Menu_View'>,{}
+Calling next
+Actually doing the switch
+None,previous view,<class 'wumpus.views.views.Login_View'>
+switching
+Called it
+Setting up
+Adding widgets
+setting next,<class 'wumpus.views.views.Menu_View'>,<wumpus.views.views.Login_View object at 0x7f433d74c160>
+seting afterediting
+Done start
+edit
+Actually doing the switch
+<wumpus.views.views.Login_View object at 0x7f433d74c160>,previous view,<class 'wumpus.views.views.Menu_View'>
+switching
+Setting up gui
+Setting up
+Adding widgets
+seting afterediting
+Done start
+curses
+curses
+[<class 'wumpus.views.views.Login_View'>, <class 'wumpus.views.views.Menu_View'>],VIEWS
+setting next,<class 'wumpus.views.views.Login_View'>,None
+Setting up gui
+<class 'wumpus.views.views.Login_View'>,{'form_name': 'MAIN'}
+<class 'wumpus.views.views.Menu_View'>,{}
+Calling next
+Actually doing the switch
+None,previous view,<class 'wumpus.views.views.Login_View'>
+switching
+Called it
+Setting up
+Adding widgets
+setting next,<class 'wumpus.views.views.Menu_View'>,<wumpus.views.views.Login_View object at 0x7f3e66bf4978>
+seting afterediting
+Done start
+edit
+Actually doing the switch
+<wumpus.views.views.Login_View object at 0x7f3e66bf4978>,previous view,<class 'wumpus.views.views.Menu_View'>
+switching
+Setting up gui
+Setting up
+Adding widgets
+seting afterediting
+Done start
+edit
+Actually doing the switch
+<wumpus.views.views.Menu_View object at 0x7f3e66bf4a90>,previous view,<class 'wumpus.views.views.Menu_View'>
+switching
+Setting up gui
+Setting up
+Adding widgets
+seting afterediting
+Done start
+curses
+[<class 'wumpus.views.views.Login_View'>, <class 'wumpus.views.views.Menu_View'>],VIEWS
+setting next,<class 'wumpus.views.views.Login_View'>,None
+Setting up gui
+<class 'wumpus.views.views.Login_View'>,{'form_name': 'MAIN'}
+<class 'wumpus.views.views.Menu_View'>,{}
+Calling next
+Actually doing the switch
+None,previous view,<class 'wumpus.views.views.Login_View'>
+switching
+Called it
+Setting up
+Adding widgets
+setting next,<class 'wumpus.views.views.Menu_View'>,<wumpus.views.views.Login_View object at 0x7fea9aeb66a0>
+seting afterediting
+Done start
+curses
+curses
+curses
+curses
+[<class 'wumpus.views.views.Login_View'>, <class 'wumpus.views.views.Menu_View'>],VIEWS
+setting next,<class 'wumpus.views.views.Login_View'>,None
+Setting up gui
+<class 'wumpus.views.views.Login_View'>,{'form_name': 'MAIN'}
+<class 'wumpus.views.views.Menu_View'>,{}
+Calling next
+Actually doing the switch
+None,previous view,<class 'wumpus.views.views.Login_View'>
+switching
+Called it
+Setting up
+Adding widgets
+setting next,<class 'wumpus.views.views.Menu_View'>,<wumpus.views.views.Login_View object at 0x7fea20a43668>
+seting afterediting
+Done start
+edit
+Actually doing the switch
+<wumpus.views.views.Login_View object at 0x7fea20a43668>,previous view,<class 'wumpus.views.views.Menu_View'>
+switching
+Setting up gui
+Setting up
+Adding widgets
+seting afterediting
+Done start
+edit
+Actually doing the switch
+<wumpus.views.views.Menu_View object at 0x7fea20a437b8>,previous view,<class 'wumpus.views.views.Menu_View'>
+switching
+Setting up gui
+Setting up
+Adding widgets
+seting afterediting
+Done start
+curses
+[<class 'wumpus.views.views.Login_View'>, <class 'wumpus.views.views.Menu_View'>],VIEWS
+setting next,<class 'wumpus.views.views.Login_View'>,None
+Setting up gui
+<class 'wumpus.views.views.Login_View'>,{'form_name': 'MAIN'}
+<class 'wumpus.views.views.Menu_View'>,{}
+Calling next
+Actually doing the switch
+None,previous view,<class 'wumpus.views.views.Login_View'>
+switching
+Called it
+Setting up
+Adding widgets
+setting next,<class 'wumpus.views.views.Menu_View'>,<wumpus.views.views.Login_View object at 0x7fde4a051748>
+seting afterediting
+Done start
+curses
+[<class 'wumpus.views.views.Login_View'>, <class 'wumpus.views.views.Menu_View'>],VIEWS
+setting next,<class 'wumpus.views.views.Login_View'>,None
+Setting up gui
+<class 'wumpus.views.views.Login_View'>,{'form_name': 'MAIN'}
+<class 'wumpus.views.views.Menu_View'>,{}
+Calling next
+Actually doing the switch
+None,previous view,<class 'wumpus.views.views.Login_View'>
+switching
+Called it
+Setting up
+Adding widgets
+setting next,<class 'wumpus.views.views.Menu_View'>,<wumpus.views.views.Login_View object at 0x7f9501d38828>
+seting afterediting
+Done start
+curses

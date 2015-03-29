@@ -8,7 +8,7 @@ from circuits.node import Node, remote
 from .network_node import Network_Node
 from .events import Join_Event
 from .core import Player
-from . import views
+from .views import views
 
 class Client(Network_Node, circuits.core.BaseComponent):
     def __init__(self, host="0.0.0.0", port=50552, socket=None):

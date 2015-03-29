@@ -1,1 +1,1 @@
-mode=curses
+mode=pyglet

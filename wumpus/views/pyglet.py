@@ -15,11 +15,6 @@ class Pyglet_GUI(GUI):
     def height(self):
         return self.window.height
 
-    def set_next_screen(self, screen_type):
-        super().set_next_screen(screen_type)
-
-
-
     @property
     def width(self):
         return self.window.width

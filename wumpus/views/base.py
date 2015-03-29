@@ -1,7 +1,6 @@
 import itertools, os
 import types
 
-from .utils import Lazy_Coord
 
 
 #Percent of the screen (either height or width, depending) to put between each

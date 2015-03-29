@@ -4,7 +4,6 @@ except ImportError:
     curses= None
 
 from .base import *#GUI, View
-from .views import Login_View, Lobby_View
 
 def print(*args):
     f = open("a.txt", "a")
@@ -32,13 +31,14 @@ class Curses_Widget:
 
 class Curses_GUI(GUI, curses.NPSAppManaged):
     def __init__(self):
+        from .views import Login_View, Menu_View
         super().__init__()
         #This is a function that when called (takes no arguments)
         #switches the screen
         self.next_screen_function = lambda: None
         #This ought to be made less hacky once I move the implementations out
         #of here
-        self.views = [views.Login_View, views.Lobby_View]
+        self.views = [Login_View, Menu_View]
         print(self.views, "VIEWS")
 
     def onStart(self):
@@ -93,7 +93,7 @@ class Curses_GUI(GUI, curses.NPSAppManaged):
             except Exception as e:
                 print(e)
         self.next_screen_function = lambda: switch_screen(self)
-        self.setNextForm("MAIN")#screen_class.__name__)
+        self.setNextForm(screen_class.__name__)
 
     def next_screen(self):
         print("Actually doing the switch")
