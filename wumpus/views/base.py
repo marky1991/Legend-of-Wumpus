@@ -1,6 +1,7 @@
 import itertools, os
 import types
 
+from ..log import debug, error, warning
 
 
 #Percent of the screen (either height or width, depending) to put between each
@@ -28,8 +29,7 @@ class GUI:
     def set_next_screen(self, screen_class):
         """Lets the GUI know what window we're going to go to next. Sets up
         any information that next_screen will need to do its work."""
-        print("GOT the bacse class.")
-        pass
+        debug("GOT the bacse class.")
     def next_screen(self):
         """Switches the current screen to the one set up by set_next_screen."""
         pass
@@ -56,7 +56,7 @@ class View:
     def __init__(self, gui):
         """Right now, this is pointless. Just indicates the interface.
         If it never becomes functional, to-be-removed."""
-        print("INITING")
+        debug("INITING")
         super().__init__()
         self.screen = None
         self.gui = gui
@@ -67,7 +67,7 @@ class View:
         have a set-up gui.) This method is called after the gui is up and running."""
         pass
 
-    def setup(self):
+    def post_init(self):
         pass
     def update(self):
         """Duh."""

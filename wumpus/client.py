@@ -5,6 +5,7 @@ from circuits.net.events import connect, write
 import circuits
 from circuits.node import Node, remote
 
+from .log import debug
 from .network_node import Network_Node
 from .events import Join_Event
 from .core import Player
@@ -32,15 +33,15 @@ class Client(Network_Node, circuits.core.BaseComponent):
     def connected(self, host, port):
         #self.fire(remote(write(Join_Event(self.player).bytify()), "server"))
         self.fire(write(Join_Event(self.player).bytify().encode("utf-8")), self.server_channel)
-        print("Finished")
+        debug("Finished")
     def go(self):
         self.gui = views.GUI()
-        print("Made gui")
+        debug("Made gui")
         self.gui.set_next_screen(views.Login_View)
         self.start()
-        print("Srtarting gui")
+        debug("Srtarting gui")
         self.gui.run()
-        print("Started")
+        debug("Started")
 
     def update(self):
         self.game.update()

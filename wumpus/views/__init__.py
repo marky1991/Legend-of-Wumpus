@@ -3,14 +3,16 @@ basepath = os.path.dirname(__file__)
 path = os.path.abspath(os.path.join(basepath, "..", "..", "settings.txt"))
 settings = open(path, "r")
 
+from ..log import debug, warning, error
+
 try:
     from .pyglet import Pyglet_GUI
     from .pyglet import Pyglet_View
 except ImportError as e:
     import traceback
     for line in traceback.format_stack():
-        print(line)
-    print(e)
+        error(line)
+    error(e)
     Pyglet_GUI = Pyglet_View = None
 
 try:
@@ -18,14 +20,14 @@ try:
 except ImportError as e:
     import traceback
     for line in traceback.format_stack():
-        print(line)
-    print(e)
+        error(line)
+    error(e)
     Curses_GUI = Curses_View = None
 
 #Short term hack. Should be replaced with proper
 #settings loading.
 mode = next(settings).replace("\n", "").split("=")[1]
-print(mode, "mode")
+debug(mode, "mode")
 settings.close()
 
 

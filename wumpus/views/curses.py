@@ -3,14 +3,10 @@ try:
 except ImportError:
     curses= None
 
+from ..log import debug, warning, error
+
 from .base import *#GUI, View
 
-def print(*args):
-    f = open("a.txt", "a")
-    f.write(",".join(map(str, args))+"\n")
-    f.close()
-
-print("curses")
 view_cache = {}
 class Curses_Widget:
     def __init__(self, widget):
@@ -26,7 +22,7 @@ class Curses_Widget:
         try:
             attr= self.widget.__getattribute__(attr_name)
         except Exception as e:
-            print("Error", e)
+            error("Error", e)
         return attr
 
 class Curses_GUI(GUI, curses.NPSAppManaged):
@@ -39,31 +35,32 @@ class Curses_GUI(GUI, curses.NPSAppManaged):
         #This ought to be made less hacky once I move the implementations out
         #of here
         self.views = [Login_View, Menu_View]
-        print(self.views, "VIEWS")
+        debug(self.views, "VIEWS")
 
     def onStart(self):
-        print("Setting up gui")
+        debug("Setting up gui")
         if self.view is None:
             for index in range(len(self.views)):
+                debug(self.views)
                 screen_class = self.views[index]
                 if index == 0:# and False:
                     kwargs = {"form_name": "MAIN"}
                 else:
                     kwargs = {}
                 if screen_class not in view_cache:
-                    print(screen_class, kwargs)
+                    debug(screen_class, kwargs)
                     view_cache[screen_class] = screen_class(self, **kwargs)
 
-            print("Calling next")
+            debug("Calling next")
             self.next_screen()
-            print("Called it")
-        print("Setting up")
-        self.view.setup()
-        print("Adding widgets")
+            debug("Called it")
+        debug("Setting up")
+        self.view.post_init()
+        debug("Adding widgets")
         self.view.add_widgets()
-        print("seting afterediting")
-        self.view.afterEditing = lambda: (print("edit") or self.next_screen())
-        print("Done start")
+        debug("seting afterediting")
+        self.view.afterEditing = lambda: (debug("edit") or self.next_screen())
+        debug("Done start")
         
     def run(self):
         super().run()
@@ -77,26 +74,26 @@ class Curses_GUI(GUI, curses.NPSAppManaged):
         return self.view.lines
     
     def set_next_screen(self, screen_class):
-        print("setting next", screen_class, self.view)
+        debug("setting next", screen_class, self.view)
         first_screen = self.view is None
 
         #Due to the way npyscreen works, I can't do this in __init__
         def switch_screen(self):
             #So application is set only once we try to switch to another view
             #HAAACK
-            print(self.view, "previous view", screen_class)
+            debug(self.view, "previous view", screen_class)
             self.view = view_cache[screen_class]
-            print("switching")
+            debug("switching")
             try:
                 if not first_screen:
                     self.onStart()
             except Exception as e:
-                print(e)
+                error(e)
         self.next_screen_function = lambda: switch_screen(self)
         self.setNextForm(screen_class.__name__)
 
     def next_screen(self):
-        print("Actually doing the switch")
+        debug("Actually doing the switch")
         self.next_screen_function()
 
     def register_view(self, view_type):
@@ -107,7 +104,7 @@ class Curses_View(View, curses.Form):
         super().__init__(gui)
         self.form_name = form_name or type(self).__name__
 
-    def setup(self):
+    def post_init(self):
         self.gui.registerForm(self.form_name, self)
 
     def text_box(self, label=None, x=None, y=None, secret=False):

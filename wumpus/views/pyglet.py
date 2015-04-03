@@ -4,11 +4,12 @@ try:
 except ImportError:
     kytten = None
 
+from .. import debug
 from .base import GUI, View
 
 class Pyglet_GUI(GUI):
     def run(self):
-        print("Running pyglet gjui")
+        debug("Running pyglet gjui")
         pyglet.app.run()
     
     @property
@@ -40,7 +41,7 @@ class Pyglet_View(View):
             #for widget in self.widgets:
             #    widget.draw()
 
-    def setup(self):
+    def post_init(self):
         pass
     def text_box(self, label=None, x=None, y=None,  secret=False):
         x = ((x or 0) / 100) * self.gui.width

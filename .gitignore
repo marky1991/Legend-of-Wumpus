@@ -1,3 +1,5 @@
 wumpus/__pycache__/
 *.pyc
 *.swp
+*.log
+password.txt

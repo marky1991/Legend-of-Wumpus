@@ -5,6 +5,7 @@ import importlib
 
 from wumpus.core import Player
 from wumpus.utils import get_git_password
+from wumpus.views import View
 def bytify(arg):
     return json.dumps(_bytify(arg))
 
@@ -68,9 +69,8 @@ class Join_Event(Event):
         listener.game.players.add(self.player)
         if not listener.is_server:
             if self.player == listener.player:
-                #For now hardcoding the view as curses
-                listener.view = Curses_View()
-                listener.view.setup()
+                listener.view = View()
+                listener.view.post_init()
     
     @classmethod
     def debytify(cls, json_val):
