@@ -37,7 +37,7 @@ class Client(Network_Node, circuits.core.BaseComponent):
     def go(self):
         self.gui = views.GUI()
         debug("Made gui")
-        self.gui.set_next_screen(views.Login_View)
+        self.gui.views.append(views.Login_View)
         self.start()
         debug("Srtarting gui")
         self.gui.run()

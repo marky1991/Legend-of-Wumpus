@@ -33,7 +33,6 @@ class Pyglet_View(View):
             self.gui.window.dispatch_event("on_update", dt)
         pyglet.clock.schedule(update)
         gui.batch = pyglet.graphics.Batch()
-        self.view.add_widgets()
         @gui.window.event
         def on_draw():
             gui.window.clear()
@@ -41,8 +40,6 @@ class Pyglet_View(View):
             #for widget in self.widgets:
             #    widget.draw()
 
-    def post_init(self):
-        pass
     def text_box(self, label=None, x=None, y=None,  secret=False):
         x = ((x or 0) / 100) * self.gui.width
         y = ((y or 0) / 100) * self.gui.height
