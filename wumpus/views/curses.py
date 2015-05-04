@@ -39,25 +39,7 @@ class Curses_GUI(GUI, curses.NPSAppManaged):
         #Why is thuis check needed?
         #TODO delete the check
         if self.view is None:
-            debug(self.views, "views")
-            for index in range(len(self.views)):
-                debug(index)
-                screen_class = self.views[index]
-                debug("cls", screen_class)
-                #npycurses really likes the first screen to be named
-                #main. I don't rememer if this is required or not. Please
-                #investigate later. It'd be nice to remove the special case.
-                if index == 0:# and False:
-                    kwargs = {"form_name": "MAIN"}
-
-                else:
-                    kwargs = {}
-
-
-                #One issue here is that this requires that there is only one screen
-                #of each type in the game. It would be nice to remove this restriction
-                debug(self.view_cache)
-                self.register_view(screen_class, kwargs)
+            self.register_view(self.first_view_class, {"form_name": "MAIN"})
 
         #Doing this here doesn't feel right. Please look into me. Might be
         #right, it's just a feeling

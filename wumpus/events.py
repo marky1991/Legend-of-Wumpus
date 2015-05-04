@@ -5,7 +5,6 @@ import importlib
 
 from wumpus.core import Player
 from wumpus.utils import get_git_password
-from wumpus.views import View
 def bytify(arg):
     return json.dumps(_bytify(arg))
 
@@ -62,6 +61,7 @@ class Join_Event(Event):
         self.player = player
         super().__init__(player)
     def handle(self, listener):
+        from wumpus.views import View
         #TODO: You know, add the client to the client list.
         #This is breaking OOP guidelines, but I don't see the point
         #in adding a trivial method right now. Will improve design

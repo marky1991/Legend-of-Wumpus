@@ -3,13 +3,20 @@ try:
     import kytten
 except ImportError:
     kytten = None
+    pyglet = None
+    error("Failed to import either kytten or pyglet")
 
-from .. import debug
+from .. import debug, error
 from .base import GUI, View
 
 class Pyglet_GUI(GUI):
     def run(self):
+        debug(pyglet, kytten)
         debug("Running pyglet gjui")
+        debug("first class", self.first_view_class)
+        self.view = self.first_view_class(self)
+        self.view.post_init()
+        debug("Created the first view")
         pyglet.app.run()
     
     @property
@@ -43,6 +50,7 @@ class Pyglet_View(View):
     def text_box(self, label=None, x=None, y=None,  secret=False):
         x = ((x or 0) / 100) * self.gui.width
         y = ((y or 0) / 100) * self.gui.height
+        debug("Adding a text box with label", label)
         box = kytten.Dialog( 
             kytten.HorizontalLayout([
                 kytten.Label(label),

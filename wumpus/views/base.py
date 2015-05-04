@@ -21,7 +21,14 @@ class GUI:
     def __init__(self):
         super().__init__()
         self.view = None
+        #Why does this exist in the base?
         self.window = None
+        #The class of the view you want to start on (the more obvious design
+        #would have been to just let the client set
+        #gui.view = some_view_instance, but certain backends (curses) don't let
+        #you instantiate views before the gui is actually running)
+        #I don't think this is too awkward a workaround
+        self.first_view_class = None
 
     def update(self):
         """Duh."""
