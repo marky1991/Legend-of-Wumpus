@@ -34,9 +34,9 @@ class Curses_GUI(GUI, curses.NPSAppManaged):
 
     def onStart(self):
         debug("Setting up gui", self.view)
-        #Why is thuis check needed?
         self.setNextForm("MAIN")
         debug(self.view)
+        #Why is thuis check needed?
         #TODO delete the check
         if self.view is None:
             debug(self.views, "views")
@@ -64,14 +64,6 @@ class Curses_GUI(GUI, curses.NPSAppManaged):
         self.view = self.view_cache[self.views[0]]
         self.view.post_init()
 
-        debug("Setting up")
-        debug("seting afterediting")
-        def after_editing(self):
-            debug("Calling next screen now")
-            self.gui.view = self.next_screen
-            sely.gui.view.post_init()
-            debug("finished afterEdit")
-        self.view.afterEditing = after_editing
         debug("Done start")
         
     def run(self):
@@ -123,16 +115,20 @@ class Curses_View(View, curses.Form):
         except KeyError as e:
             error("Didn't find {cls} in the view_cache. The cache: {cache}".format(
                         cls=str(screen_class), cache=self.gui.view_cache))
-        debug("switching")
-        """
-        try:
-            if not first_screen:
-                self.onStart()
-        except Exception as e:
-            error(e)
-        """
-        self.gui.setNextForm(screen_class.__qualname__)
-        debug("Finished")
+            raise e
+        debug("setting next form to", screen_class.__qualname__)
+
+        debug("seting afterediting")
+        def after_editing(self):
+            debug("Calling next screen now")
+
+            self.gui.setNextForm(screen_class.__qualname__)
+            debug("setting next view to", self.next_view)
+            self.gui.view = self.next_view
+            self.gui.view.post_init()
+            debug("finished afterEdit")
+        self.afterEditing = lambda: after_editing(self)
+        debug("Finished setting the next screen")
 
     def text_box(self, label=None, x=None, y=None, secret=False):
         if not secret:
@@ -144,6 +140,7 @@ class Curses_View(View, curses.Form):
         if label is not None:
             args = (cls,)
             kwargs = {"name": label}
+        debug("Adding a widget with label: {lbl}".format(lbl=label))
         try:
             return Curses_Widget(self.add(*args, **kwargs))
         except Exception as e:
