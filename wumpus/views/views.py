@@ -1,5 +1,6 @@
 #This is an implementation of View and GUI, not the base classes themselves
 from . import View, GUI
+from ..log import debug, error
 
 #This ought to be factored out into the framework.
 #(Side note: ought to create a framework : ) )
@@ -16,10 +17,12 @@ class Login_View(View):
         #Wow, this API ended up god-awful. It works (for pyglet anyway), but man is it hideous
         #Fixing this is a priority.
         #Putting this here is a hack too
-        self.gui.set_next_screen(Menu_View)
+        debug("in ad widgets")
+        self.set_next_screen(Menu_View)
         self.username = self.text_box("Username:", 20, 80)
         self.password = self.text_box("Password:", 20, 100*((self.username.y - self.username.height - WIDGET_SPACING) / self.gui.height), secret=True)
         self.server_url = self.text_box("Server Url:", 20, 100*((self.password.y - self.password.height - WIDGET_SPACING) /self.gui.height))
+        debug("finished add_widgets for login_view")
 
 class Menu_View(View):
     def __init__(self, gui, *args, **kwargs):
