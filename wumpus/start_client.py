@@ -8,7 +8,7 @@ from circuits.net.events import connect
 import sys
 from datetime import datetime
 
-now = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+now = datetime.now().strftime("%Y-%m-%d")
 log.init(filename="client_" + now)
 
 c = Client()# + Debugger()

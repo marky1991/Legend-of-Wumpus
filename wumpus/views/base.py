@@ -56,7 +56,7 @@ class View:
     def __init__(self, gui):
         """Right now, this is pointless. Just indicates the interface.
         If it never becomes functional, to-be-removed."""
-        debug("INITING")
+        debug("{cls}.init() triggered View.__init__".format(cls=type(self).__qualname__))
         super().__init__()
         self.screen = None
         self.gui = gui
@@ -68,7 +68,8 @@ class View:
         pass
 
     def post_init(self):
-        pass
+        debug("Adding widgets")
+        self.add_widgets()
     def update(self):
         """Duh."""
         pass
