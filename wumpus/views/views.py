@@ -16,7 +16,6 @@ class Login_View(View):
     def add_widgets(self):
         #Wow, this API ended up god-awful. It works (for pyglet anyway), but man is it hideous
         #Fixing this is a priority.
-        #Putting this here is a hack too
         debug("in ad widgets")
         self.set_next_screen(Menu_View)
         self.username = self.text_box("Username:", 20, 80)
@@ -30,13 +29,14 @@ class Menu_View(View):
 
     def add_widgets(self):
         self.room_name = self.text_box("Room name:")
+        self.set_next_screen(Lobby_View)
 
 class Lobby_View(View):
     def __init__(self, gui, *args, **kwargs):
         super().__init__(gui, *args, **kwargs)
     def add_widgets(self):
-        with self.row() as row:
-            self.map = self.map(idk, parent=row)
+        with self.make_row() as row:
+            self.map = self.map(parent=row)
             self.player_list = self.list(max_lines=20, parent=row)
         self.chat_box = self.dialog_box(max_lines=6)
 
