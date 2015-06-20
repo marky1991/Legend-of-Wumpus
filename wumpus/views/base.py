@@ -14,7 +14,11 @@ class Thing:
         self.y = y
         self.height = height
         self.width = width
-
+class Row_Maker:
+    def __enter__(self):
+        debug("Adding a new row")
+    def __exit__(self, type, value, traceback):
+        debug("Finished the row")
 
 #Yeah, it turns out I needed a global context for the gui after all. : )
 class GUI:
@@ -101,5 +105,7 @@ class View:
         Whatever type of object this returns, it has to have height, width, x, and y attributes.
         All other information about the object is undefined."""
         pass
+    def make_row(self):
+        return Row_Maker()
     def run(self):
         pass

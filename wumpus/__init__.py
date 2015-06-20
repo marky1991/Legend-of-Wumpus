@@ -3,7 +3,7 @@ __all__ = ["units", "client", "server"]
 import pathlib, os
 
 log_roots = [pathlib.Path(__file__).parent.parent,
-             os.path.expanduser("~"),
+             pathlib.Path(os.path.expanduser("~")),
              pathlib.Path("/tmp")]
 
 for root in log_roots:
@@ -19,6 +19,8 @@ for root in log_roots:
              break
         else:
              raise e
+    #Stop as soon as we can log *somewhere*
+    break
 
 from .log import debug, error, warning
 
