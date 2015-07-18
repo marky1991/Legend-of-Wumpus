@@ -20,8 +20,11 @@ class Curses_Widget:
     def __getattr__(self, attr_name):
         try:
             attr= self.widget.__getattribute__(attr_name)
-        except Exception as e:
+        except AttributeError as e:
             error("Error", e)
+            #Why am I eating the exception here?
+            #probably should make this a raise
+            #Can't remember how this interacts with getattribute though
         return attr
 
 class Curses_GUI(GUI, curses.NPSAppManaged):
@@ -128,4 +131,14 @@ class Curses_View(View, curses.Form):
         except Exception as e:
             error(e)
             raise e
-
+    def map(self, map, x=None, y=None, width=None, height=None, parent=None):
+        #TODO: Make this relative to the amount of remaining space somehow
+        height = height or 50
+        width = width or 50
+        cls = curses.MultiLineEdit
+        try:
+            return Curses_Widget(self.add(cls, width=width, height=height, value=("a"*60 + "\n")*10,
+                             editable=False))
+        except Exception as e:
+            error(e)
+            raise e

@@ -94,7 +94,11 @@ class View:
     def update(self):
         """Duh."""
         pass
-    def text_box(self, x=None, y=None, label=None, secret=False):
+    def make_row(self):
+        return Row_Maker()
+    def run(self):
+        pass
+    def text_box(self, x=None, y=None, label=None, secret=False, parent=None):
         """This function attaches it to the screen, whether you assign it to
         self (e.g. self.blah = return_value) or not. So don't forget to bind
         it to self.
@@ -103,9 +107,21 @@ class View:
         asterisks, for example)
         
         Whatever type of object this returns, it has to have height, width, x, and y attributes.
-        All other information about the object is undefined."""
+        All other information about the object is undefined.
+        (From now on, this will be referred to as the "widget interface")
+        """
         pass
-    def make_row(self):
-        return Row_Maker()
-    def run(self):
+    def map(self, map, x=None, y=None, width=None, height=None, parent=None):
+        """Called a map, but really can take anything that has an update
+        method (Because this is my current usecase). The screen will
+        periodically redraw the "map". A more general name can be given
+        once it becomes obvious. (Maybe when I'm using this for something
+        other than a map)
+            
+        Returns an object meeting the widget interface."""
+        pass
+    def list(self,lst, x=None, y=None, width=None, height=None, max_lines=None, parent=None):
+        """Draws a list (conceptual list, not the datatype)."""
+        pass
+    def dialog_box(self, x=None, y=None, max_lines=None, secret=False, parent=None):
         pass

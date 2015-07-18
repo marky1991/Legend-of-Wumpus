@@ -36,7 +36,10 @@ class Lobby_View(View):
         super().__init__(gui, *args, **kwargs)
     def add_widgets(self):
         with self.make_row() as row:
-            self.map = self.map(parent=row)
-            self.player_list = self.list(max_lines=20, parent=row)
+            #TODO: Make a map object for the widget to display
+            self.test = self.text_box("Test")
+            self.map = self.map(None, parent=row)
+            self.test2 = self.text_box("test2")
+            self.player_list = self.list([], max_lines=20, parent=row)
         self.chat_box = self.dialog_box(max_lines=6)
 
