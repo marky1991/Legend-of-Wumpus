@@ -63,7 +63,74 @@ class Lazy_Coord(float):
     def __int__(self):
         return int(self.function())
 
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.x = None
+        self.y = None
+        self.left = self.right = self.up = self.down = None
 
+class Grid:
+    def __init__(self, columns=50, rows=50):
+        """Represents an m x n grid of nodes. 
+        
+        Internally implemented as a list of lists. (Sparseness
+        was considered, but for my usecase, it will always be fully
+        populated, so it was unnecessary complexity)"""
+        self.nodes = [[None for y in rows] for x in columns]
+    def __getitem__(self, indices):
+        #For now, only supporting grid[1,2] syntax 
+        #(I.e. no ellipses or ranges please)
+        x, y = indices
+        return self.nodes[x][y]
+    def __setitem__(self, indices, data):
+        x, y = indices
+        if x < 0:
+            x = len(self.nodes) + x
+        if y < 0:
+            y = len(self.nodes[x]) + y
+        #The main behavior requirements considered for the 
+        #current design:
+            #O(1) lookup (Not strictly needed, but nice)
+            #O(1) neighbor lookup (Radial damage, etc)
+            #O(n) insertion
+            #(Deletion's performance is irrelevant as I never intend to 
+            #remove from the data structure) (For completeness: all subclasses must
+            #have O(n) worst case performance here)
+
+        #I currently have O(1) for all of these, given that I dropped the sparseness
+        #design. A sparse list of lists would work with these complexity
+        #requirements
+
+        #Memory requirements are O(n), where n = number of nodes
+        #(reminder: Constant factors don't matter for O-notation)
+        
+        #The current design seems to meet these requirements (it exceeds them in fact),
+        #so I'm not spending further time thinking about it
+
+        node = Node(data)
+        if x > 0:
+            left = self.nodes[x-1][y]
+            node.left = left
+            if left:
+                left.right = node
+
+        if x < (len(self.nodes) - 1):
+            right = self.nodes[x+1][y]
+            node.right = right
+            if right:
+                node.left = node
+        if y > 0:
+            down = self.nodes[x][y-1]
+            node.down = down
+            if down:
+                down.up = node
+        if y < (len(self.nodes[x]) - 1):
+            up = self.nodes[x][y+1]
+            node.up = up
+            if up:
+                up.down = node
+        self.nodes[x][y] = node            
 
 def get_git_password():
     f = open("../password.txt")

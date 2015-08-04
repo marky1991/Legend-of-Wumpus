@@ -135,10 +135,9 @@ class Curses_View(View, curses.Form):
         #TODO: Make this relative to the amount of remaining space somehow
         height = height or 50
         width = width or 50
-        cls = curses.MultiLineEdit
+        cls = curses.Pager
         try:
-            return Curses_Widget(self.add(cls, width=width, height=height, value=("a"*60 + "\n")*10,
-                             editable=False))
+            return Curses_Widget(self.add(cls, values='a'))
         except Exception as e:
             error(e)
             raise e

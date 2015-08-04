@@ -1,4 +1,5 @@
 import json
+from .utils import Grid
 
 class Player:
     def __init__(self, name="default"):
@@ -101,3 +102,16 @@ class Unit:
         return default
     def __str__(self):
         return "{0}({1})".format(type(self), self.name)
+
+class Map:
+    def __init__(self, grid=None, columns=50, rows=50):
+        self.grid = grid or Grid(columns, rows)
+    def jsonify(self):
+        return {"grid": self.grid.jsonify()}
+    @classmethod
+    def debytify(cls, json_string):
+        print(json_string)
+        json_dict = json.loads(json_string)
+        grid = Grid.debytify(json_dict["grid"]) 
+        map = cls(grid=grid)
+        return map
