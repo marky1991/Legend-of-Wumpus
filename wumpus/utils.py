@@ -63,11 +63,12 @@ class Lazy_Coord(float):
     def __int__(self):
         return int(self.function())
 
+not_set = object()
 class Node:
-    def __init__(self, data):
-        self.data = data
-        self.x = None
-        self.y = None
+    def __init__(self, data=not_set, x=None, y=None):
+        self.data = not_set
+        self.x = x
+        self.y = y
         self.left = self.right = self.up = self.down = None
 
 class Grid:
@@ -77,7 +78,24 @@ class Grid:
         Internally implemented as a list of lists. (Sparseness
         was considered, but for my usecase, it will always be fully
         populated, so it was unnecessary complexity)"""
-        self.nodes = [[None for y in range(rows)] for x in range(columns)]
+        self.nodes = []
+        for x in range(columns):
+            self.nodes.append([])
+            for y in range(rows):
+                node = Node()
+                if x > 0:
+                    left = self.nodes[x-1][y]
+                    node.left = left
+                    left.right = node
+
+                if y > 0:
+                    down = self.nodes[x][y-1]
+                    node.down = down
+                    down.up = node
+                node.x = x
+                node.y = y
+                self.nodes[x].append(node)
+
     def __getitem__(self, indices):
         #For now, only supporting grid[1,2] syntax 
         #(I.e. no ellipses or ranges please)
@@ -130,6 +148,8 @@ class Grid:
             node.up = up
             if up:
                 up.down = node
+        node.x = x
+        node.y = y
         self.nodes[x][y] = node            
 
 def get_git_password():

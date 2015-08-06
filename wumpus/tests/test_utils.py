@@ -1,7 +1,7 @@
 from functools import wraps
 import random
 from nose.tools import nottest
-from wumpus.utils import *
+from ..utils import Lazy_Coord, Node, not_set, Grid
 
 @nottest
 def unary_test(function):
@@ -117,7 +117,7 @@ class test_grid_and_node:
         node_count = 0
         for column in self.grid.nodes:
             for item in column:
-                if item is not None:
+                if item.data is not not_set:
                     node_count = node_count + 1
         assert node_count == 1, ("len of nodes != 1, actually equals", node_count)
         assert self.grid.nodes[1][4].data == 750
@@ -136,11 +136,13 @@ class test_grid_and_node:
         potato = self.grid[2,4]
         self.grid[3,3] = "mark"
         mark = self.grid[3, 3]
-        assert potato.left == potato.right == potato.up == potato.down == None
-        assert mark.left == mark.right == mark.up == mark.down == None
+        assert {not_set} == {potato.left.data, potato.right.data,
+                               potato.up.data, potato.down.data}
+        assert {not_set} == {mark.left.data, mark.right.data,
+                             mark.up.data, mark.down.data}
         self.grid[3,4] = "cheese"
         cheese = self.grid[3, 4]
         assert potato.right == cheese
-        assert cheese.left == potato
+        assert cheese.left == potato, ("cheese left != potato", cheese.left, potato)
         assert mark.up == cheese, ("mark.up is not cheese, but instead", mark.up.data if mark and mark.up else "WAS NONE")
         assert cheese.down == mark

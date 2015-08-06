@@ -106,6 +106,9 @@ class Unit:
 class Map:
     def __init__(self, grid=None, columns=50, rows=50):
         self.grid = grid or Grid(columns, rows)
+        for node in self.grid:
+            node.data = Cell()
+
     def jsonify(self):
         return {"grid": self.grid.jsonify()}
     @classmethod
@@ -115,3 +118,32 @@ class Map:
         grid = Grid.debytify(json_dict["grid"]) 
         map = cls(grid=grid)
         return map
+class Cell:
+    """Represents a square in a map."""
+    def __init__(self):
+        #Grass is a required terrain type, no matter what
+        #(You're free to customize it, but it must exist!)
+        from .terrain_types import Grass
+        #Mountain, grass, river, etc.
+        self.terrain = Grass()
+        #Anything located here (other than a player), e.g. a chest
+        #Obviously there can only be one thing at a location, other than a player
+        #This is intentional.
+        self.object = None
+    
+class Terrain:
+    def __init__(self):
+        #How many steps it takes to traverse the terrain
+        #For unpassable things like mountains, make infinity
+        self.movement_cost = 1
+        #At 0, you are invulnerable in this location
+        #At 1, you take normal damage.
+        #At 2, you take double damage, 3, 3x, etc
+        
+        #Might want to make this more sophisticated
+        #than a simple constant. (Ex: perhaps on a river, submarine fighters
+        #take no damage but everyone else takes normal damage)
+        #For now, this is good enough
+        self.defense_multiplier = 1.0
+        #Same thing, except for attack
+        self.attack_multiplier = 1.0
