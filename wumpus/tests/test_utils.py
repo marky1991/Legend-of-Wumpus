@@ -1,7 +1,6 @@
 from functools import wraps
 import random
 from nose.tools import nottest
-
 from wumpus.utils import *
 
 @nottest
@@ -115,8 +114,13 @@ class test_grid_and_node:
         assert self.node2 != self.node1
     def test_set(self):
         self.grid[1, 4] = 750
-        assert len(self.grid.nodes) == 1, ("len of nodes != 1, actually equals", len(self.grid.nodes))
-        assert self.grid.nodes[0].data == 750
+        node_count = 0
+        for column in self.grid.nodes:
+            for item in column:
+                if item is not None:
+                    node_count = node_count + 1
+        assert node_count == 1, ("len of nodes != 1, actually equals", node_count)
+        assert self.grid.nodes[1][4].data == 750
     def test_get(self): 
         self.grid[1, 4] = "test"
         assert self.grid[1,4].data == "test"
@@ -124,18 +128,19 @@ class test_grid_and_node:
         assert self.grid[0, 0] == None
     def test_x_y(self):
         self.grid[1,2] = "bmah"
-        assert self.node1.x == 1, ("node1.x, ", self.node1.x, "!=", 1)
-        assert self.node1.y == 2, ("node1.y, ", self.node1.y, "!=", 2)
+        node = self.grid[1,2]
+        assert node.x == 1, ("node1.x, ", node.x, "!=", 1)
+        assert node.y == 2, ("node1.y, ", node.y, "!=", 2)
     def test_up_down_left_right(self): 
         self.grid[2,4] = "potato"
         potato = self.grid[2,4]
         self.grid[3,3] = "mark"
-        mark = self.grid[2,4]
+        mark = self.grid[3, 3]
         assert potato.left == potato.right == potato.up == potato.down == None
         assert mark.left == mark.right == mark.up == mark.down == None
         self.grid[3,4] = "cheese"
         cheese = self.grid[3, 4]
         assert potato.right == cheese
         assert cheese.left == potato
-        assert mark.up == cheese
+        assert mark.up == cheese, ("mark.up is not cheese, but instead", mark.up.data if mark and mark.up else "WAS NONE")
         assert cheese.down == mark
