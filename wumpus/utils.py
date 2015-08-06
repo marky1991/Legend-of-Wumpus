@@ -77,7 +77,7 @@ class Grid:
         Internally implemented as a list of lists. (Sparseness
         was considered, but for my usecase, it will always be fully
         populated, so it was unnecessary complexity)"""
-        self.nodes = [[None for y in rows] for x in columns]
+        self.nodes = [[None for y in range(rows)] for x in range(columns)]
     def __getitem__(self, indices):
         #For now, only supporting grid[1,2] syntax 
         #(I.e. no ellipses or ranges please)

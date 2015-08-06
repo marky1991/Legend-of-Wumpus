@@ -29,7 +29,7 @@ class Dummy_Object:
         self.x = x
         self.y = y
 
-class testUtils:
+class test_lazy_coords:
     def setup(self):
         self.origin = Dummy_Object(0, 0)
         self.one_one = Dummy_Object(1, 1)
@@ -100,3 +100,42 @@ class testUtils:
         assert float(x * y) == 21, ("Lazy * lazy failed: ", (float(x * y), 21))
         assert float(x / y) == 3/7, ("Lazy / Lazy failed: ", (float(x / y), 3/7))
         assert float(y ** x) == 7**3, ("Lazy ** lazy failed: ", (float(y ** x), 7**3))
+
+class test_grid_and_node:
+    def setup(self):
+        self.node1 = Node("hello")
+        self.node2 = Node(500)
+        self.grid = Grid(5, 10)
+    def test_node_eq(self):
+        assert self.node1 == self.node1
+    def test_node_data(self):
+        assert self.node1.data == "hello"
+        assert self.node2.data == 500
+    def test_node_neq(self):
+        assert self.node2 != self.node1
+    def test_set(self):
+        self.grid[1, 4] = 750
+        assert len(self.grid.nodes) == 1, ("len of nodes != 1, actually equals", len(self.grid.nodes))
+        assert self.grid.nodes[0].data == 750
+    def test_get(self): 
+        self.grid[1, 4] = "test"
+        assert self.grid[1,4].data == "test"
+        assert self.grid[1,1] == None
+        assert self.grid[0, 0] == None
+    def test_x_y(self):
+        self.grid[1,2] = "bmah"
+        assert self.node1.x == 1, ("node1.x, ", self.node1.x, "!=", 1)
+        assert self.node1.y == 2, ("node1.y, ", self.node1.y, "!=", 2)
+    def test_up_down_left_right(self): 
+        self.grid[2,4] = "potato"
+        potato = self.grid[2,4]
+        self.grid[3,3] = "mark"
+        mark = self.grid[2,4]
+        assert potato.left == potato.right == potato.up == potato.down == None
+        assert mark.left == mark.right == mark.up == mark.down == None
+        self.grid[3,4] = "cheese"
+        cheese = self.grid[3, 4]
+        assert potato.right == cheese
+        assert cheese.left == potato
+        assert mark.up == cheese
+        assert cheese.down == mark
