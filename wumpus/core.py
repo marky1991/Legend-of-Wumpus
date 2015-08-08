@@ -15,7 +15,7 @@ class Player:
         print(json_string)
         json_dict = json.loads(json_string)
         player = cls(name=json_dict["name"])
-        player.team = team
+        player.team = json_dict["team"]
         return player
     def __eq__(self, other):
         #We do not care about team for purposes of equality
