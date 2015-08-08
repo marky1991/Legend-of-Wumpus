@@ -63,13 +63,24 @@ class Lazy_Coord(float):
     def __int__(self):
         return int(self.function())
 
-not_set = object()
+class Unset_Sentinel:
+    def __repr__(self):
+        return type(self).__name__
+    def __str__(self):
+        return type(self).__name__
+    def __hash__(self):
+        return id(self)
+not_set = Unset_Sentinel()
 class Node:
     def __init__(self, data=not_set, x=None, y=None):
-        self.data = not_set
+        self.data = data
         self.x = x
         self.y = y
         self.left = self.right = self.up = self.down = None
+    def __str__(self):
+        return str(self.data)
+    def __repr__(self):
+        return str(self.data)
 
 class Grid:
     def __init__(self, columns=50, rows=50):
@@ -137,7 +148,7 @@ class Grid:
             right = self.nodes[x+1][y]
             node.right = right
             if right:
-                node.left = node
+                right.left = node
         if y > 0:
             down = self.nodes[x][y-1]
             node.down = down

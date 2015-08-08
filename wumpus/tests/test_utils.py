@@ -107,9 +107,10 @@ class test_grid_and_node:
         self.grid = Grid(5, 10)
     def test_node_eq(self):
         assert self.node1 == self.node1
+        assert self.node2 != self.node1
     def test_node_data(self):
-        assert self.node1.data == "hello"
-        assert self.node2.data == 500
+        assert self.node1.data == "hello", ("node1 data was not 'hello', but instead", self.node1.data)
+        assert self.node2.data == 500, ("node2 data was not 500, but instead", self.node2.data)
     def test_node_neq(self):
         assert self.node2 != self.node1
     def test_set(self):
@@ -123,9 +124,9 @@ class test_grid_and_node:
         assert self.grid.nodes[1][4].data == 750
     def test_get(self): 
         self.grid[1, 4] = "test"
-        assert self.grid[1,4].data == "test"
-        assert self.grid[1,1] == None
-        assert self.grid[0, 0] == None
+        assert self.grid[1,4].data == "test", ("node is not test", self.grid[1,4].data, "test")
+        assert self.grid[1,1].data == not_set, (("self.grid[1,1] is not not_set, but instead", self.grid[1,1]))
+        assert self.grid[0, 0].data == not_set
     def test_x_y(self):
         self.grid[1,2] = "bmah"
         node = self.grid[1,2]
