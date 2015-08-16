@@ -1,12 +1,11 @@
 import json, subprocess
-from collections.abc import Mapping
 import platform
 import importlib
 
 from wumpus.core import Player
-from wumpus.utils import get_git_password
+from wumpus.utils import get_git_password, jsonify
 def bytify(arg):
-    return json.dumps(_bytify(arg))
+    return json.dumps(jsonify(arg))
 
 def debytify(byte_string):
     string = byte_string.decode("utf-8")
@@ -137,30 +136,3 @@ class Restart_Event(Event):
         print("Restarting")
         server.restart()
 
-
-def _bytify(arg):
-    """Woo recursion!"""
-    if hasattr(arg, "jsonify"):
-        return _bytify(arg.jsonify())
-
-    known_types = [str, int, float, bool, type(None)]
-    if type(arg) in known_types:
-        return arg
-    #If it's a mapping
-    if isinstance(arg, Mapping):
-        def wrap(item):
-            return type(arg)(item)
-        return wrap({_bytify(key): _bytify(value) for (key, value) in arg.items()})
-    if hasattr(arg, "__iter__"):
-        def wrap(item):
-            return type(arg)([item])
-        if len(arg) > 1:
-            head, *tail = arg
-
-            #Python doesn't do tail-call optimization anyway
-            return wrap(_bytify(head)) + wrap(_bytify(*tail))
-        elif len(arg) == 1:
-            return wrap(_bytify(arg[0]))
-        else:
-            return wrap([])
-    raise ValueError("Unbytify-able object: {obj}".format(obj=arg))

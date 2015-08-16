@@ -1,4 +1,4 @@
-import json
+import json, random
 from .utils import Grid
 
 class Player:
@@ -6,13 +6,13 @@ class Player:
         self.name = name
         #For now, team isn't a custom object.
         #Just a string (More like a label than a thing)
+        #This is an intentional design decision, not a lazy implementation : )
         self.team = None
     def jsonify(self):
         return {"name": self.name,
                 "team": self.team}
     @classmethod
     def debytify(cls, json_string):
-        print(json_string)
         json_dict = json.loads(json_string)
         player = cls(name=json_dict["name"])
         player.team = json_dict["team"]
@@ -37,6 +37,10 @@ class Game:
     def update(self):
         pass
 class Unit:
+    #Convenience thing.
+    #(Tired of filtering through vars)
+    stats = ["resistance", "strength", "speed", "skill", "magic", "luck",
+             "defense", "hp"]
     def __init__(self):
         #Represents the max growth per level. Multipied by a random number between 0 and 1,
         #then rounded to the nearest integer 
@@ -84,10 +88,15 @@ class Unit:
 
     def level_up(self):
         increased_none = True    
+        nonzero_stats = list(filter(lambda item: item[1] != 0, self.growth_rates.items()))
+        #If someone really defines a class with all zero growth rates, don't even
+        #bother trying to level them up (So as to prevent the infinite loop)
+        if not nonzero_stats:
+            return
         while increased_none:
-            for attribute_name, growth_rate in self.growth_rates.items():
+            for attribute_name, growth_rate in nonzero_stats:
                 guaranteed_levels, growth_rate  = divmod(growth_rate, 100)
-                increased_level = random.random() > growth_rate/100
+                increased_level = random.random() < growth_rate/100
                 increased_none = guaranteed_levels + increased_level == 0 
                 setattr(self, attribute_name, getattr(self, attribute_name) + guaranteed_levels + increased_level)
     
@@ -104,7 +113,7 @@ class Unit:
         return "{0}({1})".format(type(self), self.name)
 
 class Map:
-    def __init__(self, grid=None, columns=50, rows=50):
+    def __init__(self, columns=50, rows=50, grid=None):
         self.grid = grid or Grid(columns, rows)
         for node in self.grid:
             node.data = Cell()
@@ -113,37 +122,78 @@ class Map:
         return {"grid": self.grid.jsonify()}
     @classmethod
     def debytify(cls, json_string):
-        print(json_string)
         json_dict = json.loads(json_string)
         grid = Grid.debytify(json_dict["grid"]) 
         map = cls(grid=grid)
         return map
 class Cell:
     """Represents a square in a map."""
-    def __init__(self):
-        #Grass is a required terrain type, no matter what
-        #(You're free to customize it, but it must exist!)
-        from .terrain_types import Grass
-        #Mountain, grass, river, etc.
-        self.terrain = Grass()
+    def __init__(self, terrain=None):
+        if terrain is None:
+            terrain = Terrain()
+
+        self.terrain = terrain
         #Anything located here (other than a player), e.g. a chest
         #Obviously there can only be one thing at a location, other than a player
         #This is intentional.
         self.object = None
+    def jsonify(self):
+        return {"terrain": self.terrain,
+                #TODO: Uncomment
+               }#"object": self.object}
+    @classmethod
+    def debytify(cls, json_string): 
+        json_dict = json.loads(json_string)
+        terrain = Terrain.debytify(json_dict["terrain"])
+        cell = Cell(terrain=terrain)
+        return cell
+        #TODO: For now, ignoring object until I've figured out the protocol I want
     
 class Terrain:
     def __init__(self):
         #How many steps it takes to traverse the terrain
         #For unpassable things like mountains, make infinity
         self.movement_cost = 1
+        
         #At 0, you are invulnerable in this location
         #At 1, you take normal damage.
         #At 2, you take double damage, 3, 3x, etc
-        
-        #Might want to make this more sophisticated
+        #(Might want to make this more sophisticated
         #than a simple constant. (Ex: perhaps on a river, submarine fighters
         #take no damage but everyone else takes normal damage)
-        #For now, this is good enough
+        #For now, this is good enough)
         self.defense_multiplier = 1.0
         #Same thing, except for attack
         self.attack_multiplier = 1.0
+
+        self.name = "Default"
+        self.description = "NOT SET"
+    def jsonify(self):
+        return {"name": self.name,
+                "movement_cost": self.movement_cost,
+                "defense_multiplier": self.defense_multiplier,
+                "attack_multiplier": self.attack_multiplier,
+                "description": self.description}
+
+    @classmethod
+    def debytify(cls, json_string): 
+        json_dict = json.loads(json_string)
+        me = cls()
+        me.name = json_dict["name"]
+        me.movement_cost = json_dict["movement_cost"]
+        me.defense_multiplier = json_dict["defense_multiplier"]
+        me.attack_multiplier = json_dict["attack_multiplier"]
+        me.description = json_dict["description"]
+        return me
+    @classmethod
+    def load(cls, line):
+        """Line is a dict as returned by the csv DictReader module"""
+        name, description, movement_cost, defense_multiplier,attack_multiplier = line
+        me = cls()
+        me.name = name
+        me.description = description
+        me.movement_cost = float(movement_cost)
+        me.defense_multiplier = float(defense_multiplier)
+        me.attack_multiplier = float(attack_multiplier)
+        return me
+

@@ -1,6 +1,7 @@
 #This is an implementation of View and GUI, not the base classes themselves
 from . import View, GUI
 from ..log import debug, error
+from ..core import Map
 
 #This ought to be factored out into the framework.
 #(Side note: ought to create a framework : ) )
@@ -36,7 +37,8 @@ class Lobby_View(View):
         super().__init__(gui, *args, **kwargs)
     def add_widgets(self):
         with self.make_row() as row:
-            #TODO: Make a map object for the widget to display
+            #TODO: Make the map work properly.
+            map = Map()
             self.test = self.text_box("Test")
             self.map = self.map(None, parent=row)
             self.test2 = self.text_box("test2")
