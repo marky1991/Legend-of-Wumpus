@@ -1,7 +1,8 @@
 from functools import wraps
+import itertools
 import random
 from nose.tools import nottest
-from ..utils import Lazy_Coord, Node, not_set, Grid
+from ..utils import Lazy_Coord, Node, not_set, Grid, bytify, jsonify
 
 @nottest
 def unary_test(function):
@@ -122,6 +123,22 @@ class test_grid_and_node:
                     node_count = node_count + 1
         assert node_count == 1, ("len of nodes != 1, actually equals", node_count)
         assert self.grid.nodes[1][4].data == 750
+    def test_node_jsonify(self):
+        expected = {"data": "hello",
+                    "data_class": "builtins.str",
+                    "x": None,
+                    "y": None}
+        assert self.node1.jsonify() == expected
+    def test_node_dejsonify(self):
+        json_dict = {"data": "hello",
+                    "data_class": "builtins.str",
+                    "x": None,
+                    "y": None}
+        assert Node.dejsonify(json_dict).data == "hello"
+        assert Node.dejsonify(json_dict).x == None
+        assert Node.dejsonify(json_dict).y == None
+    def test_node_serialization(self):
+        assert Node.dejsonify(self.node1.jsonify()).data == self.node1.data
     def test_get(self): 
         self.grid[1, 4] = "test"
         assert self.grid[1,4].data == "test", ("node is not test", self.grid[1,4].data, "test")
@@ -147,3 +164,19 @@ class test_grid_and_node:
         assert cheese.left == potato, ("cheese left != potato", cheese.left, potato)
         assert mark.up == cheese, ("mark.up is not cheese, but instead", mark.up.data if mark and mark.up else "WAS NONE")
         assert cheese.down == mark
+    def test_grid_jsonify(self):
+        expected = {"nodes": [[Node() for _ in range(10)] for _ in range(5)]}
+        expected_nodes = expected["nodes"]
+        json_nodes = self.grid.jsonify()["nodes"]
+        for node1, node2 in zip(itertools.chain.from_iterable(expected_nodes),
+                         itertools.chain.from_iterable(json_nodes)):
+            assert node1.data == node2.data
+    def test_grid_dejsonify(self):
+        json_dict = {"nodes": [[jsonify(Node()) for _ in range(self.grid.rows)] for _ in range(self.grid.columns)]}
+        assert Grid.dejsonify(json_dict) == self.grid, (Grid.dejsonify(json_dict), self.grid)
+
+
+                                                    
+def test_bytify_returns_bytes():
+    sample = 5
+    assert hasattr(bytify(sample), "decode"), (bytify(sample), type(bytify(sample)))

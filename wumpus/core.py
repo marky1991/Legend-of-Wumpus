@@ -12,8 +12,7 @@ class Player:
         return {"name": self.name,
                 "team": self.team}
     @classmethod
-    def debytify(cls, json_string):
-        json_dict = json.loads(json_string)
+    def dejsonify(cls, json_dict):
         player = cls(name=json_dict["name"])
         player.team = json_dict["team"]
         return player
@@ -119,13 +118,18 @@ class Map:
             node.data = Cell()
 
     def jsonify(self):
-        return {"grid": self.grid.jsonify()}
+        return {"grid": self.grid}
     @classmethod
-    def debytify(cls, json_string):
-        json_dict = json.loads(json_string)
-        grid = Grid.debytify(json_dict["grid"]) 
+    def dejsonify(cls, json_dict):
+        grid = Grid.dejsonify(json_dict["grid"]) 
         map = cls(grid=grid)
         return map
+    def __eq__(self, other):
+        return self.grid == other.grid
+
+    def __str__(self):
+        return "Map(grid={grid})".format(grid=str(self.grid))
+    __repr__ = __str__
 class Cell:
     """Represents a square in a map."""
     def __init__(self, terrain=None):
@@ -138,16 +142,21 @@ class Cell:
         #This is intentional.
         self.object = None
     def jsonify(self):
-        return {"terrain": self.terrain,
+        return {"terrain": self.terrain}
                 #TODO: Uncomment
-               }#"object": self.object}
+               #"object": self.object}
     @classmethod
-    def debytify(cls, json_string): 
-        json_dict = json.loads(json_string)
-        terrain = Terrain.debytify(json_dict["terrain"])
+    def dejsonify(cls, json_dict):
+        terrain = Terrain.dejsonify(json_dict["terrain"])
         cell = Cell(terrain=terrain)
         return cell
         #TODO: For now, ignoring object until I've figured out the protocol I want
+
+    def __eq__(self, other):
+        if hasattr(other, "terrain") and hasattr(other, "object"):
+            return self.terrain == other.terrain and self.object == other.object
+        else:
+            return False
     
 class Terrain:
     def __init__(self):
@@ -176,8 +185,7 @@ class Terrain:
                 "description": self.description}
 
     @classmethod
-    def debytify(cls, json_string): 
-        json_dict = json.loads(json_string)
+    def dejsonify(cls, json_dict): 
         me = cls()
         me.name = json_dict["name"]
         me.movement_cost = json_dict["movement_cost"]
@@ -196,4 +204,8 @@ class Terrain:
         me.defense_multiplier = float(defense_multiplier)
         me.attack_multiplier = float(attack_multiplier)
         return me
+    def __eq__(self, other):
+        if not hasattr(other, "name"):
+            return False
+        return self.name == other.name
 

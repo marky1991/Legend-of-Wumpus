@@ -1,4 +1,4 @@
-import itertools
+import itertools, importlib
 from collections.abc import Mapping
 import json
 
@@ -74,6 +74,11 @@ class Unset_Sentinel:
         return type(self).__name__
     def __hash__(self):
         return id(self)
+    def jsonify(self):
+        return {"": None}
+    @classmethod
+    def dejsonify(cls, json_dict):
+        return not_set
 not_set = Unset_Sentinel()
 class Node:
     def __init__(self, data=not_set, x=None, y=None):
@@ -82,21 +87,34 @@ class Node:
         self.y = y
         self.left = self.right = self.up = self.down = None
     def __str__(self):
-        return str(self.data)
-    def __repr__(self):
-        return str(self.data)
+        return "Node({data})".format(data=str(self.data))
+    __repr__ = __str__
     def jsonify(self):
+        cls = type(self.data)
         return {"data": self.data,
+                "data_class": cls.__module__ + "." + cls.__qualname__,
                 "x": self.x,
                 "y": self.y}
     @classmethod
-    def debytify(cls, json_string):
-        json_dict = json.loads(json_string)
+    def dejsonify(cls, json_dict):
         x = json_dict["x"]
         y = json_dict["y"]
-        data = debytify(json_dict["data"])
+        *module_pieces, data_cls = json_dict["data_class"].split(".")
+        data_cls_module = importlib.import_module(".".join(module_pieces))
+        data_cls = getattr(data_cls_module, data_cls)
+        if hasattr(data_cls, "dejsonify"):
+            data = data_cls.dejsonify(json_dict["data"])
+        elif data_cls in [str, int, float, bool]:
+            data = json_dict["data"]
         me = cls(data=data, x=x, y=y)
         return me
+    def __eq__(self, other):
+        return self is other
+        fields = ["data", "x", "y", "left", "right", "up", "down"]
+        try:
+            return all((getattr(self, field) == getattr(other, field) for field in fields))
+        except AttributeError:
+            return False
 
 class Grid:
     def __init__(self, columns=50, rows=50, nodes=None):
@@ -158,6 +176,8 @@ class Grid:
 
         node = Node(data)
         if x > 0:
+            print(x, y, len(self.nodes))
+            print(len(self.nodes[x-1]))
             left = self.nodes[x-1][y]
             node.left = left
             if left:
@@ -192,12 +212,30 @@ class Grid:
         #Assuming a consistently-sized matrix
         return len(self.nodes[0] if self.nodes else [])
     def jsonify(self):
-        return jsonify(self.nodes)
+        return {"nodes": self.nodes}
     @classmethod
-    def debytify(cls, json_string):
-        print(type(json_string), json_string)
-        nodes = Node.debytify(json_string)
+    def dejsonify(cls, json_dict):
+        nodes = []
+        for col in json_dict["nodes"]:
+            column = []
+            for row in col:
+                node = Node.dejsonify(row)
+                column.append(node)
+            nodes.append(column)
+
         me = Grid(nodes=nodes)
+        return me
+    def __str__(self):
+        return "Grid(columns={cols}, rows={rows})".format(cols=len(self.nodes),
+                                                          rows=len(self.nodes[0]) if self.nodes else 0)
+    __repr__ = __str__
+
+    def __eq__(self, other):
+        for node1, node2 in zip(self, other):
+            if node1.data != node2.data:
+                print(node1.data, node2.data)
+                return False
+        return True
 
 def get_git_password():
     f = open("../password.txt")
@@ -224,9 +262,26 @@ def jsonify(arg):
             head, *tail = arg
 
             #Python doesn't do tail-call optimization anyway
-            return wrap(jsonify(head)) + wrap(jsonify(tail))
+            #tail is already an iterable due to the star
+            #(even if it's a single element)
+            return wrap(jsonify(head)) + jsonify(tail)
         elif len(arg) == 1:
             return wrap(jsonify(arg[0]))
         else:
             return wrap([])
     raise ValueError("Unbytify-able object: {obj}".format(obj=arg))
+
+def bytify(arg):
+    return json.dumps(jsonify(arg)).encode("utf-8")
+
+def debytify(byte_string):
+    string = byte_string.decode("utf-8")
+    dictionary = json.loads(string)
+    #This might raise exceptions, but that's fine. (There's no way to elegantly
+    #handle them here.)
+    module_name, cls_name = dictionary["name"].rsplit(".", 1)
+    module = importlib.import_module(module_name)
+    cls = getattr(module, cls_name)
+    json_dict = json.loads(string)
+    return cls.dejsonify(json_dict)
+

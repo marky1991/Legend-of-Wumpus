@@ -12,7 +12,7 @@ now = datetime.now().strftime("%Y-%m-%d")
 log.init(filename="client_" + now)
 
 c = Client()# + Debugger()
-#c.connect("marky1991.com", 50551)
+c.connect("localhost", 50551)
 try:
     c.go()
 except KeyboardInterrupt:

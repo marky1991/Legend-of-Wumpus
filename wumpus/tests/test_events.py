@@ -5,7 +5,7 @@ from wumpus.events import *
 
 from wumpus.tests.mock import FakeServer, FakeClient
 from wumpus.core import Player
-
+from wumpus.utils import debytify, bytify
 
 
 def server_and_client(function):
@@ -26,14 +26,14 @@ class testEvents:
         events = [Join_Event]
         for cls in events:
             event = cls(self.player)
-            round_trip_event = debytify(event.bytify().encode("utf-8"))
+            round_trip_event = debytify(bytify(event))
             assert event == round_trip_event, (vars(event), vars(round_trip_event))
     
     def test_server_event_serialization(self): 
         events = [Shutdown_Event, Restart_Event]
         for cls in events:
             event = cls()
-            round_trip_event = debytify(event.bytify().encode("utf-8"))
+            round_trip_event = debytify(bytify(event))
             assert event == round_trip_event, (vars(event), vars(round_trip_event))
 
     def test_update_code_event(self):
