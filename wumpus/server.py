@@ -17,6 +17,8 @@ class Server(Network_Node, circuits.core.BaseComponent):
         self.clients = {}
         #This is a temporary design. Ultimately this will be part of a client.
         #This is just here until clients are implemented
+        #TODO: I'm from future and I don't remember what
+        #this is talking about. Please investigate.
         self.sockets = set()
         self.id_generator = count()
         self.node = Node((self.host, self.port))

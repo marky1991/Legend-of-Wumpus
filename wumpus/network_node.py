@@ -3,6 +3,7 @@ from circuits.node import remote
 from circuits.net.events import connect, write
 from . import events
 from .events import bytify
+from .utils import debytify
 from .core import Game
 
 class Network_Node:
@@ -26,12 +27,12 @@ information, but that day isn't today."""
             data = args[0]
         else:
             socket, data = args
-        event = events.debytify(data)
+        event = debytify(data)
         old_events = new_events = event.handle(self)
         if event.broadcast and self.is_server:
             print(self.broadcast, "BROADCASTING")
             source_client = filter(lambda client: client.socket == socket,
-                                  self.clients)
+                                  self.clients.values())
             self.broadcast(event, exclude_list=list(source_client))
         #old = new = [BBevent]
         #Hmm. This implementation assumes a finite event

@@ -2,7 +2,7 @@ from functools import wraps
 import random, nose
 from nose.tools import nottest
 from ..core import Player, Game, Unit, Terrain, Cell, Map
-from ..events import bytify
+from ..utils import jsonify
 
 class Test_Unit_Level_All(Unit):
     def __init__(self):
@@ -36,8 +36,8 @@ class test_player:
                    "team": self.player1.team}
         assert self.player1.jsonify() == expected, (
                     self.player1.jsonify(), "!=", expected)
-    def test_debytify(self):
-        assert Player.debytify(bytify(self.player1)) == self.player1
+    def test_dejsonify(self):
+        assert Player.dejsonify(self.player1.jsonify()) == self.player1
     def test_eq(self):
         assert self.player1 != self.player2
         assert self.player1 == self.player3
@@ -75,10 +75,8 @@ class test_unit:
     def test_level_up_all(self):
         for stat in type(self.good_unit).stats:
             assert getattr(self.good_unit, stat) == 10, (getattr(self.good_unit, stat), stat)
-        print("all were 10")
         self.good_unit.level_up()
-        print(vars(self.good_unit))
-        
+       
         for stat in type(self.good_unit).stats:
             assert getattr(self.good_unit, stat) == 11, (getattr(self.good_unit, stat), stat)
 
@@ -101,11 +99,11 @@ class test_map:
         assert self.big_map.grid.rows == 200
         assert self.big_map.grid.columns == 100
     def test_jsonify(self):
-        expected = {"grid": self.map.grid.jsonify()}
-        assert self.map.jsonify() == expected, (
-                    self.map.jsonify(), "!=", expected)
-    def test_debytify(self):
-        assert Map.debytify(bytify(self.map)) == self.map
+        expected = {"grid": jsonify(self.map.grid)}
+        assert jsonify(self.map) == expected, (
+                    jsonify(self.map), "!=", expected)
+    def test_dejsonify(self):
+        assert Map.dejsonify(jsonify(self.map)) == self.map, (self.map, Map.dejsonify(jsonify(self.map)))
 
 class test_cell:
     def setup(self):

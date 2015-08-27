@@ -3,19 +3,8 @@ import platform
 import importlib
 
 from wumpus.core import Player
-from wumpus.utils import get_git_password, jsonify
-def bytify(arg):
-    return json.dumps(jsonify(arg))
+from wumpus.utils import get_git_password, jsonify, bytify, debytify
 
-def debytify(byte_string):
-    string = byte_string.decode("utf-8")
-    dictionary = json.loads(string)
-    #This might raise exceptions, but that's fine. (There's no way to elegantly
-    #handle them here.)
-    module_name, cls_name = dictionary["name"].rsplit(".", 1)
-    module = importlib.import_module(module_name)
-    cls = getattr(module, cls_name)
-    return cls.debytify(string)
 class Event:
     #Determines whether the server will forward the event on to other clients or
 #not.
@@ -44,11 +33,8 @@ pretty sure this is a good idea, but I could maybe be wrong.
         return {"name": self.name,
                 "args": self.args,
                 "kwargs": self.kwargs}
-    def bytify(self):
-        return bytify(self.jsonify())
     @classmethod
-    def debytify(cls, json_val):
-        json_dict = json.loads(json_val)
+    def dejsonify(cls, json_dict):
         return cls(*json_dict["args"], **json_dict["kwargs"])
     def __eq__(self, other):
         return self.args == other.args and self.kwargs == other.kwargs and self.name == other.name
@@ -72,8 +58,7 @@ class Join_Event(Event):
                 listener.view.post_init()
     
     @classmethod
-    def debytify(cls, json_val):
-        json_dict = json.loads(json_val)
+    def dejsonify(cls, json_dict):
         player_dict = json_dict["args"][0]
         name, team = player_dict["name"], player_dict["team"]
         player = Player(name)
@@ -102,6 +87,10 @@ allows me to be even lazier than I would have to be to do it the Right Way.
     def __init__(self, *args, **kwargs):
         super().__init__()
     def handle(self, listener):
+        #Let's not do this for now
+        #Need to figure out how this interacts with no-ff
+        #(If at all)
+        return
         print("Hello from updet")
         password = get_git_password()
         cmd = ("git", "pull")
