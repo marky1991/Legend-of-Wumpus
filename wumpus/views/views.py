@@ -40,8 +40,7 @@ class Lobby_View(View):
             #TODO: Make the map work properly.
             map = Map()
             self.test = self.text_box("Test")
-            self.map = self.map(None, parent=row)
-            self.test2 = self.text_box("test2")
-            self.player_list = self.list([], max_lines=20, parent=row)
-        self.chat_box = self.dialog_box(max_lines=6)
+            self.map = self.map(map, parent=row)
+            #self.player_list = self.list([], max_lines=20, parent=row)
+        #self.chat_box = self.dialog_box(max_lines=6)
 

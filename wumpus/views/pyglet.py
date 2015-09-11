@@ -1,3 +1,4 @@
+from .. import debug, error
 try:
     import pyglet
     import kytten
@@ -6,7 +7,6 @@ except ImportError:
     pyglet = None
     error("Failed to import either kytten or pyglet")
 
-from .. import debug, error
 from .base import GUI, View
 
 class Pyglet_GUI(GUI):

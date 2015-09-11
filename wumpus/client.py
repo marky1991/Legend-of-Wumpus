@@ -10,6 +10,7 @@ from .network_node import Network_Node
 from .events import Join_Event
 from .core import Player
 from .views import views
+from .utils import bytify
 
 class Client(Network_Node, circuits.core.BaseComponent):
     def __init__(self, host="0.0.0.0", port=50552, socket=None):
@@ -32,8 +33,7 @@ class Client(Network_Node, circuits.core.BaseComponent):
     @circuits.handler("connected")
     def connected(self, host, port):
         #self.fire(remote(write(Join_Event(self.player).bytify()), "server"))
-        self.fire(write(Join_Event(self.player).bytify().encode("utf-8")), self.server_channel)
-        debug("Finished")
+        self.fire(write(bytify(Join_Event(self.player))), self.server_channel)
     def go(self):
         self.gui = views.GUI()
         debug("Made gui")

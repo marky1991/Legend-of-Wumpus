@@ -4,6 +4,7 @@ import importlib
 
 from wumpus.core import Player
 from wumpus.utils import get_git_password, jsonify, bytify, debytify
+from wumpus.log import debug
 
 class Event:
     #Determines whether the server will forward the event on to other clients or
@@ -103,7 +104,7 @@ allows me to be even lazier than I would have to be to do it the Right Way.
         if error_code:
             raise Exception("Returned {err_code} from git pull".format(err_code=error_code))
         else:
-            print("Finished")
+            debug("Finished handling restart event.")
             Restart_Event().handle(listener)
 
 class Shutdown_Event(Event):

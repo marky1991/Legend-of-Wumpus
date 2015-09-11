@@ -141,3 +141,7 @@ class Curses_View(View, curses.Form):
         except Exception as e:
             error(e)
             raise e
+    def dialog_box(self, *args, **kwargs):
+        pass
+    def list(self, *args, **kwargs):
+        pass
